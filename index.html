@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Justdoo · Odoo, IA et back-office externalisé pour les PME</title>
+<meta name="description" content="Justdoo installe Odoo dans votre PME, met l’IA au travail pour vos équipes et prend en charge votre administratif depuis son centre de services au Portugal. Derrière Justdoo, il y a Empakt.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Justdoo · Faites votre métier, Justdoo fait le reste">
+<meta property="og:description" content="Odoo, IA et back-office externalisé pour les PME. Derrière Justdoo, il y a Empakt.">
+<meta name="theme-color" content="#FFF8ED">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FFF8ED'/%3E%3Crect x='3' y='9' width='26' height='14' rx='7' fill='%234A148C'/%3E%3Ccircle cx='10' cy='16' r='3.6' fill='none' stroke='%23FFF8ED' stroke-width='2'/%3E%3Ccircle cx='22' cy='16' r='4.6' fill='%23FF7043'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500..900&family=Red+Hat+Text:wght@400..700&display=swap" rel="stylesheet">
+<script>
+  /* Avant le premier rendu : signale que JavaScript est actif (apparitions au défilement). */
+  document.documentElement.classList.add('js');
+</script>
+<style>
+/* ==========================================================================
+   1. JETONS
+   Palette retenue par JS le 21/11/2026 : améthyste, orchidée, corail, pêche.
+   ========================================================================== */
+:root {
+  --amethyste: #4A148C;
+  --orchidee: #A842C4;
+  --corail: #FF7043;
+  --peche: #FFCC80;
+
+  --papier: color-mix(in srgb, var(--peche) 14%, #fff);
+  --titre: var(--amethyste);
+  --encre: var(--amethyste);
+  --encre-douce: color-mix(in srgb, var(--amethyste) 76%, var(--papier));
+  --accent: var(--corail);
+  --accent-clair: var(--peche);                                /* accent lisible sur fond sombre */
+  --sur-accent: color-mix(in srgb, var(--amethyste) 85%, #000); /* texte posé sur le corail */
+  --bouton: var(--amethyste);
+  --sur-bouton: var(--papier);
+  --repere: var(--orchidee);                                   /* surtitres et numéros */
+  --point-carte: color-mix(in srgb, var(--orchidee) 36%, var(--papier));
+  --maison: var(--amethyste);                                  /* fond de la section Empakt */
+  --bloc: var(--peche);                                        /* fond de la section mise en avant */
+  --actif: color-mix(in srgb, var(--peche) 55%, var(--papier)); /* fond d'une option activée */
+
+  --filet: color-mix(in srgb, var(--encre) 16%, transparent);
+  --filet-fort: color-mix(in srgb, var(--encre) 36%, transparent);
+
+  --f-titre: 'Red Hat Display', 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+  --f-texte: 'Red Hat Text', 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+
+  --marge: clamp(20px, 4.4vw, 64px);
+  --gouttiere: clamp(16px, 2.2vw, 32px);
+  --section: clamp(72px, 8.8vw, 128px);
+  --h1: clamp(2.875rem, 7.6vw, 6.75rem);
+  --doux: cubic-bezier(.2, .7, .2, 1);
+}
+.sec--bloc { --encre-douce: var(--encre); --repere: var(--encre); }
+
+/* ==========================================================================
+   2. BASE
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 88px; }
+body {
+  margin: 0;
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--f-texte);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+button, input, textarea { font: inherit; color: inherit; }
+::selection { background: var(--accent); color: var(--sur-accent); }
+:focus-visible { outline: 2px solid var(--encre); outline-offset: 3px; border-radius: 2px; }
+
+h1, h2, h3 { font-family: var(--f-titre); color: var(--titre); text-wrap: balance; }
+h1 { font-size: var(--h1); font-weight: 800; letter-spacing: -0.045em; line-height: .94; }
+h1 > span, h2 > span { display: block; text-wrap: balance; }
+h2 { font-size: clamp(2.125rem, 4.6vw, 4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+h3 { font-size: clamp(1.375rem, 2vw, 1.75rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.12; }
+p, dd, li { text-wrap: pretty; }
+
+.wrap { width: 100%; max-width: calc(1240px + 2 * var(--marge)); margin-inline: auto; padding-inline: var(--marge); }
+.grille { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gouttiere); }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+.evitement { position: absolute; left: 12px; top: -80px; z-index: 100; padding: .75rem 1rem; background: var(--bouton); color: var(--sur-bouton); border-radius: 8px; font-weight: 600; text-decoration: none; }
+.evitement:focus { top: 12px; }
+
+/* ==========================================================================
+   3. ATOMES
+   ========================================================================== */
+/* Interrupteur : la signature de Justdoo. Les deux « o » du nom vivent dans une piste :
+   l'anneau à gauche (à faire), le point corail à droite (fait, position « on »).
+   Taille réglée par --h. Activé si : classe est-active, case cochée juste avant,
+   parent en aria-checked="true", ou parent est-fait. */
+.bascule {
+  --h: 1.625rem;
+  --jeu: calc(var(--h) * .16);
+  --d: calc(var(--h) - 2 * var(--jeu));
+  position: relative; display: inline-block; flex: none;
+  width: calc(var(--d) * 2 + var(--jeu) * 2 + var(--h) * .2); height: var(--h);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 max(1.5px, calc(var(--h) * .075)) currentColor;
+  transition: background-color .2s ease;
+}
+.bascule__o, .bascule__point { position: absolute; top: var(--jeu); left: var(--jeu); width: var(--d); height: var(--d); border-radius: 50%; }
+.bascule__o { box-shadow: inset 0 0 0 calc(var(--d) * .2) currentColor; transition: color .2s ease; }
+.bascule__point { background: var(--accent); opacity: 0; transform: scale(.4); transition: transform .28s var(--doux), opacity .16s ease; }
+:is(.bascule.est-active, .bascule-entree:checked + .bascule, [aria-checked="true"] > .bascule, .est-fait > .bascule) { background: currentColor; }
+:is(.bascule.est-active, .bascule-entree:checked + .bascule, [aria-checked="true"] > .bascule, .est-fait > .bascule) .bascule__o { color: var(--papier); }
+:is(.bascule.est-active, .bascule-entree:checked + .bascule, [aria-checked="true"] > .bascule, .est-fait > .bascule) .bascule__point { opacity: 1; transform: translateX(calc(var(--d) + var(--h) * .2)); }
+.bascule-entree:focus-visible + .bascule { outline: 2px solid var(--encre); outline-offset: 3px; }
+
+/* Amélioration progressive : .avec-js n'existe que si le script tourne, .sans-js le remplace sinon. */
+html:not(.js) .avec-js { display: none; }
+.js .sans-js { display: none; }
+
+/* Libellés qui changent avec l'état d'un interrupteur. */
+.si-oui { display: none; }
+.role__choix.est-fait .si-non, [aria-checked="true"] .si-non, .journal__ligne.est-fait .si-non { display: none; }
+.role__choix.est-fait .si-oui, [aria-checked="true"] .si-oui, .journal__ligne.est-fait .si-oui { display: inline; }
+
+/* Logotype : « justd » puis l'interrupteur en position « on ». */
+.logo { display: inline-flex; align-items: center; min-height: 2.75rem; text-decoration: none; }
+.logo__mot { display: inline-flex; align-items: baseline; font-family: var(--f-titre); font-weight: 800; font-size: 1.75rem; line-height: 1; letter-spacing: -0.05em; color: var(--titre); }
+.bascule--logo { --h: .64em; margin-left: .09em; transform: translateY(.065em); }
+/* Le logotype repris dans un titre (version anglaise : « We justdoo the rest. ») : insécable. */
+.titre__marque { white-space: nowrap; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 3rem; padding: .8rem 1.5rem;
+  border: 0; border-radius: 999px;
+  background: var(--bouton); color: var(--sur-bouton);
+  font-family: var(--f-texte); font-size: 1rem; font-weight: 600; line-height: 1.1; text-decoration: none; white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease, transform .12s ease;
+}
+.btn:hover { background: var(--accent); color: var(--sur-accent); }
+.btn:active { transform: scale(.975); }
+.btn--petit { min-height: 2.75rem; padding: .6rem 1.15rem; font-size: .9375rem; }
+
+.lien { display: inline-flex; align-items: center; gap: .5rem; min-height: 3rem; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .32em; text-decoration-color: var(--filet-fort); transition: text-decoration-color .18s ease; }
+.lien:hover { text-decoration-color: currentColor; }
+.lien span { transition: transform .22s var(--doux); }
+.lien:hover span { transform: translateX(4px); }
+
+.surtitre { display: flex; align-items: center; gap: .75rem; font-size: .9375rem; font-weight: 600; line-height: 1.2; color: var(--repere); }
+.surtitre::before { content: ""; width: 2rem; height: 1px; background: currentColor; }
+
+.chapo { font-size: clamp(1.125rem, 1.45vw, 1.3125rem); line-height: 1.5; }
+
+.puces li { position: relative; padding-left: 1.35rem; }
+.puces li + li { margin-top: .55rem; }
+.puces li::before { content: ""; position: absolute; left: 0; top: .58em; width: .5rem; height: .5rem; border-radius: 50%; background: var(--accent); }
+
+/* Emplacement d'image. L'attribut data-provisoire affiche une étiquette tant que
+   le visuel définitif n'est pas en place : le retirer en même temps que l'image. */
+.visuel { position: relative; aspect-ratio: 3 / 2; overflow: hidden; background: var(--bloc); }
+.visuel img { width: 100%; height: 100%; object-fit: cover; }
+.visuel--portrait { aspect-ratio: 2 / 3; border-radius: 8px; }
+.visuel[data-provisoire]::after { content: "Visuel provisoire"; position: absolute; left: .625rem; bottom: .625rem; padding: .2rem .55rem; border-radius: 999px; background: var(--papier); color: var(--encre); font-size: .6875rem; font-weight: 600; line-height: 1.3; }
+
+/* Apparition au défilement (désactivée sans JavaScript ou si mouvement réduit). */
+.js .revele { opacity: 0; transform: translateY(18px); }
+.js .revele.est-vu { opacity: 1; transform: none; transition: opacity .7s var(--doux) var(--retard, 0s), transform .7s var(--doux) var(--retard, 0s); }
+
+/* ==========================================================================
+   4. EN-TÊTE
+   ========================================================================== */
+.entete { position: sticky; top: 0; z-index: 40; background: var(--papier); border-bottom: 1px solid transparent; transition: border-color .2s ease; }
+.entete--defile { border-bottom-color: var(--filet); }
+.entete__in { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 72px; }
+.entete .logo__mot { font-size: 2rem; }
+.entete nav { display: flex; align-items: center; gap: clamp(1rem, 2.2vw, 2.25rem); }
+.entete nav a { font-size: .9375rem; font-weight: 500; text-decoration: none; padding: .75rem 0; background: linear-gradient(currentColor, currentColor) 0 calc(100% - .55rem) / 0 1px no-repeat; transition: background-size .25s var(--doux); }
+.entete nav a:hover { background-size: 100% 1px; }
+.entete__fin { display: flex; align-items: center; gap: clamp(.75rem, 1.6vw, 1.5rem); }
+
+/* Bascule de langue : un lien vers l'autre version de la page, dessiné avec l'interrupteur.
+   Les deux sigles ne bougent pas : UK à gauche, FR à droite (demande de JS du 21/11). Un seul cercle,
+   le point corail, posé du côté de la langue affichée ; pas d'anneau. Au survol, le point glisse vers
+   l'autre langue.
+   Sous 561 px l'en-tête est trop étroit : la bascule passe sur une ligne au-dessus (.langues-haut).
+   La version anglaise (uk/index.html) est fabriquée par _build/version-uk.py. */
+.langue { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.75rem; font-family: var(--f-titre); font-size: .8125rem; font-weight: 600; letter-spacing: .06em; line-height: 1; text-decoration: none; color: var(--encre-douce); }
+.langue .bascule { --h: 1.25rem; color: var(--encre); }
+html[lang="fr"] .langue__code--fr, html[lang^="en"] .langue__code--uk { font-weight: 800; color: var(--encre); }
+/* Le point corail : à gauche (côté UK) sur la page anglaise, à droite (côté FR) sur la page française. */
+.langue .bascule__point { opacity: 1; transform: none; }
+html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + var(--h) * .2)); }
+/* Au survol, le point glisse vers l'autre langue. L'effet attend la classe bascule-armee, posée par le script
+   dès que le pointeur a été vu ailleurs que sur la bascule : sans elle, la page ouverte par un clic (pointeur
+   encore posé dessus) montrerait le point du mauvais côté. */
+@media (hover: hover) {
+  html.bascule-armee[lang="fr"] .langue:hover .bascule__point { transform: none; }
+  html.bascule-armee[lang^="en"] .langue:hover .bascule__point { transform: translateX(calc(var(--d) + var(--h) * .2)); }
+}
+.langues-haut { display: none; }
+.langues-haut .wrap { display: flex; justify-content: flex-end; }
+
+/* ==========================================================================
+   5. HÉROS
+   Par défaut (mobile, tablette) : tout s'empile, le disque se couche sur le filet du bas.
+   À partir de 1200 px : composition « affiche », le disque est ancré sur la géométrie
+   du titre (unité = corps du h1) pour que « le reste. » tombe toujours sur le disque.
+   ========================================================================== */
+.heros { position: relative; overflow: clip; padding-top: clamp(28px, 4vw, 56px); border-bottom: 1px solid var(--filet-fort); --rg: clamp(28px, 3.4vw, 52px); --st-mb: clamp(20px, 2.4vw, 34px); --disque: min(152vw, 42rem); }
+.heros__grille { position: relative; row-gap: var(--rg); }
+.heros__tete { grid-column: 1 / -1; position: relative; z-index: 2; }
+.heros__tete .surtitre { margin-bottom: var(--st-mb); }
+.heros h1 { color: var(--sur-accent); } /* le titre chevauche le disque : il prend la couleur lisible sur l'accent */
+.heros__texte { grid-column: 1 / -1; position: relative; z-index: 2; max-width: 38rem; }
+.heros__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.75rem; margin-top: clamp(24px, 2.6vw, 36px); }
+.heros__pied { grid-column: 1 / -1; position: relative; z-index: 2; max-width: 38rem; }
+.formule { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1em .5em; padding-top: 1.25rem; border-top: 1px solid var(--filet-fort); font-family: var(--f-titre); font-size: clamp(1.25rem, 1.8vw, 1.625rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; color: var(--titre); }
+.formule i { font-style: normal; font-weight: 500; }
+.porte { display: inline-flex; align-items: center; gap: .875rem; min-height: 2.75rem; margin-top: 1rem; font-size: .875rem; font-weight: 500; text-decoration: none; }
+.porte img { width: 128px; }
+
+.heros__journal { grid-column: 1 / -1; margin-bottom: calc(var(--disque) * -0.12); }
+.disque { position: relative; z-index: 1; left: 50%; width: var(--disque); aspect-ratio: 1; border-radius: 50%; background: var(--accent); color: var(--sur-accent); transform: translateX(-50%); display: grid; place-items: center; }
+
+.journal { width: min(21rem, calc(100vw - 2 * var(--marge) - 12px)); }
+.journal__tete { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-bottom: .8rem; border-bottom: 1.5px solid currentColor; }
+.journal__titre { font-family: var(--f-titre); font-size: 1.3125rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; color: inherit; }
+.journal__genre { font-size: .8125rem; font-weight: 600; white-space: nowrap; }
+.journal__ligne { display: grid; grid-template-columns: 3.1rem minmax(0, 1fr) auto; align-items: center; column-gap: .75rem; padding: .72rem 0; border-bottom: 1px solid color-mix(in srgb, currentColor 30%, transparent); }
+.journal__ligne time { font-size: .875rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.journal__quoi { font-size: 1rem; font-weight: 600; line-height: 1.25; }
+.journal__note { display: block; margin-top: .1rem; font-size: .8125rem; font-weight: 500; }
+.journal .bascule { --h: 1.125rem; }
+.journal__valider { display: grid; place-items: center; min-width: 2.75rem; min-height: 2.75rem; margin: -.65rem -.33rem; padding: 0; border: 0; border-radius: 999px; background: none; color: inherit; cursor: pointer; }
+.journal__valider:focus-visible { outline-color: var(--sur-accent); outline-offset: -4px; border-radius: 999px; }
+
+@media (min-width: 1200px) {
+  .heros { --st: calc(1.125rem + var(--st-mb)); }
+  .heros__texte { grid-column: 1 / span 6; grid-row: 2; max-width: calc(var(--h1) * 4.25); }
+  .heros__pied { grid-column: 1 / span 6; grid-row: 3; align-self: end; max-width: calc(var(--h1) * 4.25); padding-bottom: clamp(32px, 4vw, 56px); }
+  .heros__journal { grid-column: 8 / -1; grid-row: 2 / span 2; margin-bottom: 0; min-height: calc(var(--h1) * 5.37 - var(--rg)); }
+  .disque { position: absolute; left: calc(var(--marge) + var(--h1) * 7.87); top: calc(var(--st) + var(--h1) * 4.5); width: calc(var(--h1) * 6.8); transform: translate(-50%, -50%); }
+  .journal { width: min(25rem, 54%); }
+  /* Version anglaise : « We justdoo the rest. » a presque la longueur du titre français (8,69 corps contre 8,78),
+     « the rest. » tombe donc sur le disque sans réglage. Si le titre anglais change, remesurer et, au besoin,
+     décaler le disque ici avec html[lang^="en"] .disque { left: calc(var(--marge) + var(--h1) * N); } */
+}
+
+/* ==========================================================================
+   6. SECTIONS
+   ========================================================================== */
+.sec { padding-block: var(--section); }
+.sec + .sec--filet { border-top: 1px solid var(--filet-fort); }
+.sec--bloc { background: var(--bloc); }
+.sec__tete { row-gap: 1.5rem; margin-bottom: clamp(44px, 5.6vw, 88px); }
+.sec__tete .surtitre { grid-column: 1 / -1; }
+.sec__tete h2 { grid-column: 1 / span 8; }
+.sec__tete .chapo { grid-column: 9 / -1; align-self: end; }
+
+/* Constat : trois métiers à confier, un interrupteur chacun */
+.roles { row-gap: 2rem; }
+.role { grid-column: span 4; display: flex; flex-direction: column; align-items: flex-start; padding-top: 1.5rem; border-top: 1.5px solid var(--encre); }
+.role h3 { margin-bottom: .5rem; }
+.role p { color: var(--encre-douce); max-width: 24em; }
+.role p { margin-bottom: 1.25rem; }
+/* Décoratif (demande de JS du 21/11) : pas de clic, le script allume chaque interrupteur quand il entre à l'écran. */
+.role__choix { position: relative; display: inline-flex; align-items: center; gap: .875rem; min-height: 2.75rem; margin-top: auto; font-weight: 600; }
+.role__choix .bascule { --h: 1.75rem; }
+.constat__chute { margin-top: clamp(48px, 6vw, 96px); row-gap: 2.5rem; align-items: center; }
+.constat__mots { grid-column: 1 / span 8; }
+.constat__phrase { font-family: var(--f-titre); font-size: clamp(1.5rem, 3vw, 2.625rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.14; color: var(--titre); }
+.constat__suite { margin-top: 1.5rem; color: var(--encre-douce); }
+.constat__visuel { grid-column: 10 / -1; }
+
+/* Offre à la carte : une carte par service, une option par ligne */
+.services { row-gap: 2rem; }
+.service { grid-column: span 4; display: flex; flex-direction: column; overflow: clip; border: 1px solid var(--filet-fort); border-radius: 10px; background: var(--papier); transition: border-color .2s ease; }
+.service.est-choisi { border-color: var(--encre); }
+.service__corps { display: flex; flex-direction: column; flex: 1; padding: clamp(1.25rem, 2vw, 1.75rem); }
+.service__tete { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .75rem; }
+.service__num { font-family: var(--f-titre); font-size: .9375rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--repere); }
+.service__tout { display: inline-flex; align-items: center; gap: .625rem; min-height: 2.75rem; padding: 0; border: 0; border-radius: 999px; background: none; color: var(--encre); font-size: .875rem; font-weight: 600; cursor: pointer; }
+.service__tout .bascule { --h: 1.75rem; order: 2; }
+.service h3 { font-size: clamp(2rem, 3vw, 2.75rem); font-weight: 800; letter-spacing: -0.045em; line-height: 1; }
+.service__promesse { margin-top: .75rem; font-family: var(--f-titre); font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; line-height: 1.18; color: var(--titre); }
+.service__texte { margin-top: .75rem; }
+.service__quand { margin-top: .75rem; font-size: .9375rem; color: var(--encre-douce); }
+.service__quand strong { font-weight: 600; color: var(--encre); }
+.options { margin-top: 1.25rem; border-top: 1px solid var(--filet-fort); }
+.option { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 1rem; min-height: 3.5rem; margin-inline: -.75rem; padding: .7rem .75rem; border-bottom: 1px solid var(--filet); border-radius: 6px; cursor: pointer; transition: background-color .18s ease; }
+.option:has(.bascule-entree:checked) { background: var(--actif); }
+.option strong { display: block; font-weight: 600; line-height: 1.3; }
+.option__desc { display: block; margin-top: .15rem; font-size: .9375rem; line-height: 1.4; color: var(--encre-douce); }
+.option .bascule { --h: 1.5rem; }
+.service__avec { margin-top: auto; padding-top: 1.25rem; font-size: .9375rem; font-weight: 500; }
+.choix { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 2rem; margin-top: clamp(32px, 4vw, 56px); padding-top: 1.5rem; border-top: 1.5px solid var(--encre); }
+.choix__titre { font-family: var(--f-titre); font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; color: var(--titre); }
+.choix__liste { margin-top: .3rem; max-width: 46em; }
+
+/* Centre de services : la carte et les faits */
+.portugal { row-gap: 2.5rem; align-items: center; }
+.carte { grid-column: 1 / span 6; }
+.carte__cadre { position: relative; }
+.carte__svg { width: 100%; }
+.carte__terre { stroke: var(--point-carte); }
+.carte__pt { stroke: var(--accent); }
+.js .carte:not(.est-vu) .carte__pt { stroke: var(--point-carte); }
+.js .carte .carte__pt { transition: stroke .9s ease .35s; }
+.carte__reperes { stroke: var(--encre); }
+.carte__nom { position: absolute; padding: .05rem .4rem; background: var(--papier); font-size: .8125rem; font-weight: 600; line-height: 1.3; white-space: nowrap; }
+.carte__nom--pt { left: 19%; top: 77.6%; transform: translate(-100%, -50%); font-family: var(--f-titre); font-size: 1.0625rem; font-weight: 800; letter-spacing: -0.02em; color: var(--titre); }
+.carte__nom--londres { left: 65%; top: 4.8%; transform: translateY(-50%); }
+.carte__nom--paris { left: 76.1%; top: 21.1%; transform: translateY(-50%); }
+.carte figcaption { display: flex; flex-wrap: wrap; gap: .4rem 1.75rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--filet); font-size: .875rem; font-weight: 500; }
+.legende { display: inline-flex; align-items: center; gap: .55rem; }
+.legende::before { content: ""; width: .7rem; height: .7rem; border-radius: 50%; background: var(--accent); }
+.legende--anneau::before { background: transparent; border: 1.5px solid var(--encre); }
+.portugal__texte { grid-column: 8 / -1; }
+.faits div { display: grid; grid-template-columns: 6rem minmax(0, 1fr); column-gap: 1.25rem; align-items: baseline; padding: 1.1rem 0; border-top: 1px solid var(--filet-fort); }
+.faits div:last-child { border-bottom: 1px solid var(--filet-fort); }
+.faits dt { font-family: var(--f-titre); font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--titre); }
+.assurances { margin-top: clamp(48px, 6vw, 88px); padding-top: 1.5rem; border-top: 1px solid var(--filet-fort); row-gap: 1.25rem; }
+.assurances p { grid-column: span 6; max-width: 34em; }
+.assurances strong { font-family: var(--f-titre); font-weight: 700; letter-spacing: -0.015em; color: var(--titre); }
+
+/* Deux modes */
+.modes { row-gap: 3rem; }
+.mode { grid-column: span 6; display: flex; flex-direction: column; padding-top: 1.5rem; border-top: 1.5px solid var(--encre); }
+.mode + .mode { padding-left: var(--gouttiere); border-left: 1px solid var(--filet-fort); }
+.mode__etiquette { margin-bottom: 1.5rem; font-size: .9375rem; font-weight: 600; color: var(--repere); }
+.mode h3 { font-size: clamp(1.625rem, 2.6vw, 2.375rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; margin-bottom: 1rem; }
+.mode > p:not(.mode__prix) { max-width: 30em; }
+.mode .puces { margin-top: 1.5rem; font-weight: 500; }
+.mode__prix { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--filet-fort); font-family: var(--f-titre); font-size: 1.125rem; font-weight: 700; letter-spacing: -0.02em; color: var(--titre); }
+.mode__prix span { order: -1; font-family: var(--f-texte); font-size: .875rem; font-weight: 500; letter-spacing: 0; color: var(--encre); }
+.mode .puces + .mode__prix { margin-top: 2rem; }
+.modes__note { margin-top: 2rem; color: var(--encre-douce); }
+
+/* Empakt : la maison derrière Justdoo, sur fond améthyste. */
+.empakt { background: var(--maison); color: var(--papier); --filet-fort: color-mix(in srgb, var(--papier) 30%, transparent); }
+.empakt h2, .empakt h3 { color: var(--papier); }
+.empakt :focus-visible { outline-color: var(--papier); }
+.empakt .surtitre { color: var(--accent-clair); }
+.empakt__haut { row-gap: 2.5rem; align-items: end; }
+.empakt__intro { grid-column: 1 / span 6; }
+.empakt__intro h2 { margin: 1.5rem 0 1.75rem; }
+.empakt__nom { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--filet-fort); font-weight: 500; }
+.empakt__nom em { font-style: normal; font-weight: 700; color: var(--accent-clair); }
+.empakt__image { grid-column: 8 / -1; }
+.empakt__image img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 4px; }
+.valeurs { margin-top: clamp(56px, 7vw, 104px); row-gap: 2.5rem; }
+.valeur { grid-column: span 4; padding-top: 1.5rem; border-top: 1px solid var(--filet-fort); }
+.valeur__num { display: block; margin-bottom: 1.25rem; font-family: var(--f-titre); font-size: .9375rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent-clair); }
+.valeur h3 { font-size: clamp(1.75rem, 2.8vw, 2.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.valeur__devise { margin: .75rem 0 .75rem; font-family: var(--f-titre); font-size: 1.1875rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+.valeur p:last-child { max-width: 26em; }
+.empakt__bas { margin-top: clamp(56px, 7vw, 104px); padding-top: clamp(32px, 4vw, 56px); border-top: 1px solid var(--filet-fort); row-gap: 2.5rem; align-items: end; }
+.citation { grid-column: 1 / span 8; }
+.citation p { font-family: var(--f-titre); font-size: clamp(1.5rem, 2.7vw, 2.375rem); font-weight: 700; letter-spacing: -0.035em; line-height: 1.1; text-wrap: balance; }
+.citation footer { margin-top: 1.25rem; font-size: .9375rem; font-weight: 500; }
+.empakt__logo { grid-column: 10 / -1; justify-self: end; width: min(100%, 15rem); }
+
+/* Contact : le point final. */
+.contact { background: var(--accent); color: var(--sur-accent); --filet-fort: color-mix(in srgb, var(--sur-accent) 40%, transparent); }
+.contact h2 { color: var(--sur-accent); font-size: clamp(2.75rem, 7vw, 6rem); line-height: .94; letter-spacing: -0.045em; }
+.contact :focus-visible { outline-color: var(--sur-accent); }
+.contact__grille { row-gap: 2.5rem; align-items: start; }
+.contact__texte { grid-column: 1 / span 6; }
+.contact__texte .chapo { margin-top: 1.75rem; max-width: 26em; font-weight: 500; }
+.formulaire { grid-column: 8 / -1; display: grid; gap: 1.1rem; }
+.champ label { display: block; margin-bottom: .4rem; font-size: .9375rem; font-weight: 600; }
+.champ label span { font-weight: 500; }
+.champ input, .champ textarea { display: block; width: 100%; min-height: 3rem; padding: .7rem .9rem; border: 1.5px solid var(--sur-accent); border-radius: 8px; background: var(--papier); color: var(--sur-accent); font-size: 1rem; line-height: 1.4; }
+.champ textarea { min-height: 6.5rem; resize: vertical; }
+.champ input:focus-visible, .champ textarea:focus-visible { outline: 2px solid var(--sur-accent); outline-offset: 2px; border-radius: 8px; }
+.champ [aria-invalid="true"] { border-width: 2.5px; }
+.champ__erreur { margin-top: .35rem; font-size: .875rem; font-weight: 700; }
+.champ__erreur:empty { display: none; }
+.piege { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.formulaire .btn { justify-self: start; background: var(--sur-accent); color: var(--papier); }
+.formulaire .btn:hover { background: var(--papier); color: var(--sur-accent); }
+.formulaire__mention, .formulaire__etat { font-size: .875rem; font-weight: 500; }
+.formulaire__etat { font-weight: 700; }
+.formulaire__etat:empty { display: none; }
+
+/* Pied de page */
+.pied { padding-block: clamp(40px, 5vw, 72px) 28px; }
+.pied__haut { row-gap: 2rem; align-items: baseline; }
+.pied__marque { grid-column: 1 / span 5; }
+.pied__marque p { margin-top: .9rem; max-width: 22em; color: var(--encre-douce); }
+.pied__marque .langue { display: flex; width: fit-content; margin-top: .6rem; }
+.pied nav { grid-column: 7 / span 3; display: grid; gap: .1rem; }
+.pied nav a { justify-self: start; padding: .55rem 0; font-weight: 500; text-decoration: none; }
+.pied nav a:hover { text-decoration: underline; text-underline-offset: .3em; }
+.pied__porte { grid-column: 10 / -1; font-size: .875rem; font-weight: 500; }
+.pied__porte img { width: 148px; margin-top: .75rem; }
+.pied__bas { margin-top: clamp(32px, 4vw, 56px); padding-top: 1.25rem; border-top: 1px solid var(--filet-fort); font-size: .8125rem; color: var(--encre-douce); }
+
+/* ==========================================================================
+   7. ADAPTATION AUX ÉCRANS
+   ========================================================================== */
+@media (min-width: 1024px) {
+  /* Trois cartes côte à côte : une sous-grille aligne chaque ligne (titre, texte, options, pied) d'une carte à l'autre. */
+  @supports (grid-template-rows: subgrid) {
+    .services { row-gap: 0; }
+    .service { display: grid; grid-row: span 10; grid-template-rows: subgrid; }
+    .service__corps { display: grid; grid-row: span 9; grid-template-rows: subgrid; }
+    .options { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
+    .options li { display: grid; }
+    .service__avec { margin-top: 0; align-self: end; }
+  }
+}
+@media (max-width: 1023px) {
+  .service { grid-column: 1 / -1; max-width: 36rem; }
+}
+@media (max-width: 960px) {
+  .entete nav { display: none; }
+  .sec__tete h2, .sec__tete .chapo { grid-column: 1 / -1; }
+  .sec__tete .chapo { max-width: 34em; }
+  .constat__mots, .constat__visuel { grid-column: 1 / -1; }
+  .constat__visuel { max-width: 18rem; }
+  .carte, .portugal__texte { grid-column: 1 / -1; }
+  .carte { max-width: 34rem; }
+  .empakt__intro, .empakt__image, .citation { grid-column: 1 / -1; }
+  .empakt__image { max-width: 40rem; }
+  .empakt__logo { grid-column: 1 / -1; justify-self: start; }
+  .contact__texte, .formulaire { grid-column: 1 / -1; }
+  .formulaire { max-width: 36rem; }
+  .pied__marque, .pied nav, .pied__porte { grid-column: 1 / -1; }
+}
+@media (max-width: 720px) {
+  .role, .valeur { grid-column: 1 / -1; }
+  .assurances p { grid-column: 1 / -1; }
+  .mode { grid-column: 1 / -1; }
+  .mode + .mode { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 640px) {
+  .heros__actions { flex-direction: column; align-items: stretch; }
+  .formule { font-size: 1.125rem; }
+  .heros__actions .lien { justify-content: center; }
+  .choix .btn { width: 100%; }
+  .formulaire .btn { justify-self: stretch; }
+  .faits div { grid-template-columns: 4.75rem minmax(0, 1fr); }
+  .faits dt { font-size: 1.5rem; }
+  .constat__visuel { max-width: none; }
+  .carte__nom { padding: 0 .2rem; font-size: .75rem; }
+  .carte__nom--pt { padding-inline: 0; font-size: .875rem; }
+}
+@media (max-width: 560px) {
+  /* L'en-tête n'a plus la place : la bascule de langue passe sur une ligne au-dessus. */
+  .langues-haut { display: block; }
+  .entete .langue { display: none; }
+}
+@media (max-width: 400px) {
+  .heros { --disque: 176vw; }
+  .heros__journal { margin-bottom: calc(var(--disque) * -0.06); }
+  .journal__ligne { grid-template-columns: 2.6rem minmax(0, 1fr) auto; column-gap: .5rem; }
+  .journal__quoi { font-size: .9375rem; }
+  .journal .bascule { --h: 1rem; }
+  .entete__in { gap: 1rem; } /* à 320 px, le logo et le bouton tiennent sans mordre sur la marge */
+  .entete .logo__mot { font-size: 1.625rem; }
+  .entete .btn { padding-inline: .9rem; font-size: .875rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+  .js .revele { opacity: 1; transform: none; }
+  .js .carte:not(.est-vu) .carte__pt { stroke: var(--accent); }
+}
+</style>
+</head>
+<body id="haut">
+
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<div class="langues-haut">
+  <div class="wrap">
+    <a class="langue" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
+  </div>
+</div>
+
+<header class="entete" id="entete">
+  <div class="wrap entete__in">
+    <a class="logo" href="#haut" aria-label="Justdoo, retour en haut de page">
+      <span class="logo__mot" aria-hidden="true">justd<span class="bascule bascule--logo est-active"><span class="bascule__o"></span><span class="bascule__point"></span></span></span>
+    </a>
+    <nav aria-label="Navigation principale">
+      <a href="#offre">L’offre</a>
+      <a href="#back-office">Le centre de services</a>
+      <a href="#modes">Deux modes</a>
+      <a href="#empakt">Empakt</a>
+    </nav>
+    <div class="entete__fin">
+      <a class="langue" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
+      <a class="btn btn--petit" href="#contact">Parler de votre projet</a>
+    </div>
+  </div>
+</header>
+
+<main id="contenu">
+
+  <!-- ====================== HÉROS ====================== -->
+  <section class="heros" aria-labelledby="titre-heros">
+    <div class="wrap grille heros__grille">
+      <div class="heros__tete">
+        <p class="surtitre">Pour les dirigeants de PME</p>
+        <h1 id="titre-heros"><span>Faites votre métier.</span> <span>Justdoo fait le reste.</span></h1>
+      </div>
+
+      <div class="heros__texte">
+        <p class="chapo">Nous installons Odoo dans votre entreprise, nous mettons l’IA au travail pour vos équipes et nous faisons tourner votre administratif depuis notre centre de services au Portugal.</p>
+        <div class="heros__actions">
+          <a class="btn" href="#contact">Parler de votre projet</a>
+          <a class="lien" href="#offre">Voir l’offre à la carte <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+
+      <div class="heros__pied">
+        <p class="formule">Odoo <i>+</i> IA <i>+</i> Back-office externalisé</p>
+        <a class="porte" href="#empakt"><span>Derrière Justdoo, il y a</span><img src="assets/empakt-logo-vert.svg" alt="Empakt" width="336" height="96"></a>
+      </div>
+
+      <div class="heros__journal">
+        <div class="disque">
+          <div class="journal" id="journal">
+            <div class="journal__tete">
+              <h2 class="journal__titre">Le reste, aujourd’hui</h2>
+              <p class="journal__genre">Journée type</p>
+            </div>
+            <ol role="list">
+              <li class="journal__ligne est-fait"><time datetime="08:40">08:40</time><span class="journal__quoi">Factures clients émises</span><span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span><span class="sr">Fait</span></li>
+              <li class="journal__ligne est-fait"><time datetime="09:15">09:15</time><span class="journal__quoi">Relances clients envoyées</span><span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span><span class="sr">Fait</span></li>
+              <li class="journal__ligne est-fait"><time datetime="10:30">10:30</time><span class="journal__quoi">Encaissements pointés</span><span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span><span class="sr">Fait</span></li>
+              <li class="journal__ligne est-fait"><time datetime="11:50">11:50</time><span class="journal__quoi">Commandes d’achat passées</span><span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span><span class="sr">Fait</span></li>
+              <li class="journal__ligne" id="ligne-paiements"><time datetime="14:00">14:00</time><span class="journal__quoi">Paiements préparés<span class="journal__note"><span class="si-non">En attente de votre validation</span><span class="si-oui">Validés par vous</span></span></span><span class="bascule sans-js" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span><button type="button" class="journal__valider avec-js" role="switch" aria-checked="false" aria-label="Valider les paiements préparés (exemple)"><span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span></button></li>
+              <li class="journal__ligne"><time datetime="16:30">16:30</time><span class="journal__quoi">Prévision de trésorerie<span class="journal__note">À venir</span></span><span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== CONSTAT ====================== -->
+  <section class="sec sec--bloc" id="constat" aria-labelledby="titre-constat">
+    <div class="wrap">
+      <div class="grille sec__tete revele">
+        <p class="surtitre">Le constat</p>
+        <h2 id="titre-constat">Tout dirigeant connaît ce moment.</h2>
+        <p class="chapo">L’entreprise grandit plus vite que son organisation. Le tableur ne suffit plus, un ERP de grand groupe serait démesuré. Alors vous cumulez trois métiers qui ne sont pas le vôtre.</p>
+      </div>
+      <ul class="grille roles" role="list">
+        <li class="role revele">
+          <h3>Chargé de recouvrement</h3>
+          <p>Vous relancez vos clients pour être payé.</p>
+          <div class="role__choix est-fait">
+            <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+            <span class="role__etat" aria-hidden="true"><span class="si-non">C’est encore vous</span><span class="si-oui">Justdoo s’en charge</span></span>
+            <span class="sr">Justdoo s’en charge</span>
+          </div>
+        </li>
+        <li class="role revele" style="--retard:.08s">
+          <h3>Comptable fournisseurs</h3>
+          <p>Vous arbitrez quelles factures régler en premier.</p>
+          <div class="role__choix est-fait">
+            <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+            <span class="role__etat" aria-hidden="true"><span class="si-non">C’est encore vous</span><span class="si-oui">Justdoo s’en charge</span></span>
+            <span class="sr">Justdoo s’en charge</span>
+          </div>
+        </li>
+        <li class="role revele" style="--retard:.16s">
+          <h3>Trésorier</h3>
+          <p>Vous surveillez le solde bancaire et les échéances fiscales.</p>
+          <div class="role__choix est-fait">
+            <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+            <span class="role__etat" aria-hidden="true"><span class="si-non">C’est encore vous</span><span class="si-oui">Justdoo s’en charge</span></span>
+            <span class="sr">Justdoo s’en charge</span>
+          </div>
+        </li>
+      </ul>
+      <div class="grille constat__chute">
+        <div class="constat__mots revele">
+          <p class="constat__phrase">Chaque heure passée à rapprocher des factures est une heure de moins pour vos clients, votre produit, votre croissance.</p>
+          <p class="constat__suite">Presque tous les dirigeants passent par là. Rien n’oblige à y rester.</p>
+        </div>
+        <figure class="visuel visuel--portrait constat__visuel revele" style="--retard:.1s">
+          <img src="assets/visuels/constat.webp" alt="Un dirigeant seul le soir à son bureau, la main sur le front, à côté d’une pile de factures." width="1024" height="1536" loading="lazy">
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== OFFRE À LA CARTE ====================== -->
+  <section class="sec sec--filet" id="offre" aria-labelledby="titre-offre">
+    <div class="wrap">
+      <div class="grille sec__tete revele">
+        <p class="surtitre">L’offre, à la carte</p>
+        <h2 id="titre-offre"><span>Trois services.</span> <span>Activez les vôtres.</span></h2>
+        <p class="chapo">Chaque entreprise part d’une situation différente. Activez les options qui correspondent à la vôtre, nous composons l’accompagnement autour.</p>
+      </div>
+
+      <ul class="grille services" role="list">
+        <li class="service revele" data-nom="Odoo">
+          <figure class="visuel">
+            <img src="assets/visuels/odoo.webp" alt="Un dirigeant souriant devant son ordinateur portable, qui affiche un tableau de bord." width="1536" height="1024" loading="lazy">
+          </figure>
+          <div class="service__corps">
+            <div class="service__tete">
+              <span class="service__num" aria-hidden="true">01</span>
+              <button type="button" class="service__tout avec-js" role="switch" aria-checked="false" aria-label="Odoo, tout activer">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+                <span class="si-non">Tout activer</span><span class="si-oui">Activé</span>
+              </button>
+            </div>
+            <h3>Odoo</h3>
+            <p class="service__promesse">Toute votre gestion dans un seul outil.</p>
+            <p class="service__texte">Ventes, achats, stocks, facturation, comptabilité&nbsp;: Odoo réunit ce que vous suivez aujourd’hui dans plusieurs outils et tableurs.</p>
+            <p class="service__quand"><strong>Pour vous si</strong> vos tableurs ne suivent plus votre activité.</p>
+            <ul class="options" role="list">
+              <li><label class="option">
+                <span><strong>Audit et cadrage</strong> <span class="option__desc">Nous analysons vos façons de travailler et dessinons l’Odoo qui vous correspond.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="odoo-audit" data-libelle="audit et cadrage">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+              <li><label class="option">
+                <span><strong>Déploiement</strong> <span class="option__desc">Configuration, reprise de vos données, mise en service par étapes.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="odoo-deploiement" data-libelle="déploiement">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+              <li><label class="option">
+                <span><strong>Formation et accompagnement</strong> <span class="option__desc">Vos équipes formées, puis suivies jusqu’à l’autonomie.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="odoo-formation" data-libelle="formation et accompagnement">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+            </ul>
+            <p class="service__avec">Avec <a href="https://tadoo.io/fr/" target="_blank" rel="noopener" aria-label="Tadoo, site externe, nouvel onglet">Tadoo</a>, intégrateur spécialiste d’Odoo.</p>
+          </div>
+        </li>
+
+        <li class="service revele" data-nom="IA" style="--retard:.08s">
+          <figure class="visuel">
+            <img src="assets/visuels/ia.webp" alt="Une formatrice montre un écran à deux collègues assis côte à côte, tous les trois souriants." width="1536" height="1024" loading="lazy">
+          </figure>
+          <div class="service__corps">
+            <div class="service__tete">
+              <span class="service__num" aria-hidden="true">02</span>
+              <button type="button" class="service__tout avec-js" role="switch" aria-checked="false" aria-label="IA, tout activer">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+                <span class="si-non">Tout activer</span><span class="si-oui">Activé</span>
+              </button>
+            </div>
+            <h3>IA</h3>
+            <p class="service__promesse">L’IA au travail, pas en démonstration.</p>
+            <p class="service__texte">Un assistant généraliste apporte peu tant qu’il n’est pas relié à vos tâches réelles. Nous partons de votre quotidien.</p>
+            <p class="service__quand"><strong>Pour vous si</strong> vos équipes testent l’IA chacune de leur côté.</p>
+            <ul class="options" role="list">
+              <li><label class="option">
+                <span><strong>Choix des usages</strong> <span class="option__desc">Nous retenons avec vous les usages qui valent la peine.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ia-usages" data-libelle="choix des usages">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+              <li><label class="option">
+                <span><strong>Formation des équipes</strong> <span class="option__desc">Des ateliers pratiques, sur vos propres cas.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ia-formation" data-libelle="formation des équipes">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+              <li><label class="option">
+                <span><strong>Automatisation</strong> <span class="option__desc">Nous automatisons ce qui se répète chaque semaine.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ia-automatisation" data-libelle="automatisation">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+            </ul>
+            <p class="service__avec">Avec Porte&nbsp;7, agence digitale et IA.</p>
+          </div>
+        </li>
+
+        <li class="service revele" data-nom="Back-office" style="--retard:.16s">
+          <figure class="visuel">
+            <img src="assets/visuels/back-office.webp" alt="Une équipe de trois personnes au travail, casque sur les oreilles. Deux d’entre elles échangent en souriant." width="1536" height="1024" loading="lazy">
+          </figure>
+          <div class="service__corps">
+            <div class="service__tete">
+              <span class="service__num" aria-hidden="true">03</span>
+              <button type="button" class="service__tout avec-js" role="switch" aria-checked="false" aria-label="Back-office, tout activer">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+                <span class="si-non">Tout activer</span><span class="si-oui">Activé</span>
+              </button>
+            </div>
+            <h3>Back-office</h3>
+            <p class="service__promesse">Votre administratif, opéré pour vous.</p>
+            <p class="service__texte">Notre centre de services au Portugal fait tourner votre administratif au quotidien, directement dans votre Odoo. Vous décidez, nous exécutons.</p>
+            <p class="service__quand"><strong>Pour vous si</strong> l’administratif prend le temps de votre métier.</p>
+            <ul class="options" role="list">
+              <li><label class="option">
+                <span><strong>Ventes et encaissements</strong> <span class="option__desc">Devis, facturation, relances, suivi des encaissements.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ventes" data-libelle="ventes et encaissements">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+              <li><label class="option">
+                <span><strong>Achats et paiements</strong> <span class="option__desc">Commandes, validations, factures, paiements préparés.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="achats" data-libelle="achats et paiements">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+              <li><label class="option">
+                <span><strong>Trésorerie</strong> <span class="option__desc">Position bancaire, échéances, prévisions.</span></span>
+                <input class="sr bascule-entree" type="checkbox" role="switch" data-service="tresorerie" data-libelle="trésorerie">
+                <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
+              </label></li>
+            </ul>
+            <p class="service__avec">Forfait mensuel. Aucun paiement ne part sans votre validation.</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="choix revele">
+        <div>
+          <p class="choix__titre">Votre formule</p>
+          <p class="choix__liste avec-js" id="choix-liste" aria-live="polite">Activez une ou plusieurs options pour composer votre formule.</p>
+        </div>
+        <a class="btn" href="#contact" id="choix-bouton">Parler de cette formule</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== CENTRE DE SERVICES ====================== -->
+  <section class="sec sec--filet" id="back-office" aria-labelledby="titre-back-office">
+    <div class="wrap">
+      <div class="grille sec__tete revele">
+        <p class="surtitre">Le centre de services</p>
+        <h2 id="titre-back-office">Au Portugal, à une heure de décalage.</h2>
+        <p class="chapo">Notre centre de services partagés est installé au Portugal. Assez proche pour travailler sur vos horaires, conçu pour suivre votre croissance.</p>
+      </div>
+
+      <div class="grille portugal">
+        <figure class="carte revele">
+          <div class="carte__cadre">
+            <!--carte:debut--><svg class="carte__svg" viewBox="0 0 479 489" role="img" aria-labelledby="carte-titre carte-desc" fill="none" stroke-linecap="round" stroke-width="7.0"><title id="carte-titre">Carte de l’Europe de l’Ouest</title><desc id="carte-desc">Le Portugal, où se trouve le centre de services Justdoo, est mis en avant. Londres, siège d’Empakt, et Paris sont repérés.</desc><path class="carte__terre" d="M78.0 6.0h.01M90.0 6.0h.01M102.0 6.0h.01M114.0 6.0h.01M126.0 6.0h.01M138.0 6.0h.01M210.0 6.0h.01M222.0 6.0h.01M234.0 6.0h.01M246.0 6.0h.01M258.0 6.0h.01M270.0 6.0h.01M282.0 6.0h.01M294.0 6.0h.01M306.0 6.0h.01M318.0 6.0h.01M330.0 6.0h.01M402.0 6.0h.01M414.0 6.0h.01M426.0 6.0h.01M438.0 6.0h.01M450.0 6.0h.01M462.0 6.0h.01M474.0 6.0h.01M84.0 16.4h.01M96.0 16.4h.01M108.0 16.4h.01M120.0 16.4h.01M192.0 16.4h.01M204.0 16.4h.01M216.0 16.4h.01M228.0 16.4h.01M240.0 16.4h.01M252.0 16.4h.01M264.0 16.4h.01M276.0 16.4h.01M288.0 16.4h.01M300.0 16.4h.01M312.0 16.4h.01M324.0 16.4h.01M384.0 16.4h.01M396.0 16.4h.01M408.0 16.4h.01M420.0 16.4h.01M432.0 16.4h.01M444.0 16.4h.01M456.0 16.4h.01M468.0 16.4h.01M246.0 26.8h.01M258.0 26.8h.01M270.0 26.8h.01M282.0 26.8h.01M294.0 26.8h.01M306.0 26.8h.01M318.0 26.8h.01M378.0 26.8h.01M390.0 26.8h.01M402.0 26.8h.01M414.0 26.8h.01M426.0 26.8h.01M438.0 26.8h.01M450.0 26.8h.01M462.0 26.8h.01M474.0 26.8h.01M216.0 37.2h.01M228.0 37.2h.01M240.0 37.2h.01M252.0 37.2h.01M264.0 37.2h.01M276.0 37.2h.01M288.0 37.2h.01M300.0 37.2h.01M312.0 37.2h.01M324.0 37.2h.01M360.0 37.2h.01M372.0 37.2h.01M384.0 37.2h.01M396.0 37.2h.01M408.0 37.2h.01M420.0 37.2h.01M432.0 37.2h.01M444.0 37.2h.01M456.0 37.2h.01M468.0 37.2h.01M210.0 47.6h.01M222.0 47.6h.01M234.0 47.6h.01M246.0 47.6h.01M258.0 47.6h.01M342.0 47.6h.01M354.0 47.6h.01M366.0 47.6h.01M378.0 47.6h.01M390.0 47.6h.01M402.0 47.6h.01M414.0 47.6h.01M426.0 47.6h.01M438.0 47.6h.01M450.0 47.6h.01M462.0 47.6h.01M474.0 47.6h.01M192.0 58.0h.01M204.0 58.0h.01M216.0 58.0h.01M336.0 58.0h.01M348.0 58.0h.01M360.0 58.0h.01M372.0 58.0h.01M384.0 58.0h.01M396.0 58.0h.01M408.0 58.0h.01M420.0 58.0h.01M432.0 58.0h.01M444.0 58.0h.01M456.0 58.0h.01M468.0 58.0h.01M186.0 68.4h.01M330.0 68.4h.01M342.0 68.4h.01M354.0 68.4h.01M366.0 68.4h.01M378.0 68.4h.01M390.0 68.4h.01M402.0 68.4h.01M414.0 68.4h.01M426.0 68.4h.01M438.0 68.4h.01M450.0 68.4h.01M462.0 68.4h.01M474.0 68.4h.01M264.0 78.7h.01M312.0 78.7h.01M324.0 78.7h.01M336.0 78.7h.01M348.0 78.7h.01M360.0 78.7h.01M372.0 78.7h.01M384.0 78.7h.01M396.0 78.7h.01M408.0 78.7h.01M420.0 78.7h.01M432.0 78.7h.01M444.0 78.7h.01M456.0 78.7h.01M468.0 78.7h.01M270.0 89.1h.01M282.0 89.1h.01M306.0 89.1h.01M318.0 89.1h.01M330.0 89.1h.01M342.0 89.1h.01M354.0 89.1h.01M366.0 89.1h.01M378.0 89.1h.01M390.0 89.1h.01M402.0 89.1h.01M414.0 89.1h.01M426.0 89.1h.01M438.0 89.1h.01M450.0 89.1h.01M462.0 89.1h.01M474.0 89.1h.01M276.0 99.5h.01M288.0 99.5h.01M300.0 99.5h.01M312.0 99.5h.01M324.0 99.5h.01M336.0 99.5h.01M348.0 99.5h.01M360.0 99.5h.01M372.0 99.5h.01M384.0 99.5h.01M396.0 99.5h.01M408.0 99.5h.01M420.0 99.5h.01M432.0 99.5h.01M444.0 99.5h.01M456.0 99.5h.01M468.0 99.5h.01M210.0 109.9h.01M222.0 109.9h.01M234.0 109.9h.01M258.0 109.9h.01M270.0 109.9h.01M282.0 109.9h.01M294.0 109.9h.01M306.0 109.9h.01M318.0 109.9h.01M330.0 109.9h.01M342.0 109.9h.01M354.0 109.9h.01M366.0 109.9h.01M378.0 109.9h.01M390.0 109.9h.01M402.0 109.9h.01M414.0 109.9h.01M426.0 109.9h.01M438.0 109.9h.01M450.0 109.9h.01M462.0 109.9h.01M474.0 109.9h.01M204.0 120.3h.01M216.0 120.3h.01M228.0 120.3h.01M240.0 120.3h.01M252.0 120.3h.01M264.0 120.3h.01M276.0 120.3h.01M288.0 120.3h.01M300.0 120.3h.01M312.0 120.3h.01M324.0 120.3h.01M336.0 120.3h.01M348.0 120.3h.01M360.0 120.3h.01M372.0 120.3h.01M384.0 120.3h.01M396.0 120.3h.01M408.0 120.3h.01M420.0 120.3h.01M432.0 120.3h.01M444.0 120.3h.01M456.0 120.3h.01M468.0 120.3h.01M210.0 130.7h.01M222.0 130.7h.01M234.0 130.7h.01M246.0 130.7h.01M258.0 130.7h.01M270.0 130.7h.01M282.0 130.7h.01M294.0 130.7h.01M306.0 130.7h.01M318.0 130.7h.01M330.0 130.7h.01M342.0 130.7h.01M354.0 130.7h.01M366.0 130.7h.01M378.0 130.7h.01M390.0 130.7h.01M402.0 130.7h.01M414.0 130.7h.01M426.0 130.7h.01M438.0 130.7h.01M450.0 130.7h.01M462.0 130.7h.01M474.0 130.7h.01M240.0 141.1h.01M252.0 141.1h.01M264.0 141.1h.01M276.0 141.1h.01M288.0 141.1h.01M300.0 141.1h.01M312.0 141.1h.01M324.0 141.1h.01M336.0 141.1h.01M348.0 141.1h.01M360.0 141.1h.01M372.0 141.1h.01M384.0 141.1h.01M396.0 141.1h.01M408.0 141.1h.01M420.0 141.1h.01M432.0 141.1h.01M444.0 141.1h.01M456.0 141.1h.01M468.0 141.1h.01M258.0 151.5h.01M270.0 151.5h.01M282.0 151.5h.01M294.0 151.5h.01M306.0 151.5h.01M318.0 151.5h.01M330.0 151.5h.01M342.0 151.5h.01M354.0 151.5h.01M366.0 151.5h.01M378.0 151.5h.01M390.0 151.5h.01M402.0 151.5h.01M414.0 151.5h.01M426.0 151.5h.01M438.0 151.5h.01M450.0 151.5h.01M462.0 151.5h.01M474.0 151.5h.01M264.0 161.9h.01M276.0 161.9h.01M288.0 161.9h.01M300.0 161.9h.01M312.0 161.9h.01M324.0 161.9h.01M336.0 161.9h.01M348.0 161.9h.01M360.0 161.9h.01M372.0 161.9h.01M384.0 161.9h.01M396.0 161.9h.01M408.0 161.9h.01M420.0 161.9h.01M432.0 161.9h.01M444.0 161.9h.01M456.0 161.9h.01M468.0 161.9h.01M270.0 172.3h.01M282.0 172.3h.01M294.0 172.3h.01M306.0 172.3h.01M318.0 172.3h.01M330.0 172.3h.01M342.0 172.3h.01M354.0 172.3h.01M366.0 172.3h.01M378.0 172.3h.01M390.0 172.3h.01M402.0 172.3h.01M414.0 172.3h.01M426.0 172.3h.01M438.0 172.3h.01M450.0 172.3h.01M462.0 172.3h.01M474.0 172.3h.01M288.0 182.7h.01M300.0 182.7h.01M312.0 182.7h.01M324.0 182.7h.01M336.0 182.7h.01M348.0 182.7h.01M360.0 182.7h.01M372.0 182.7h.01M384.0 182.7h.01M396.0 182.7h.01M408.0 182.7h.01M420.0 182.7h.01M432.0 182.7h.01M444.0 182.7h.01M456.0 182.7h.01M468.0 182.7h.01M282.0 193.1h.01M294.0 193.1h.01M306.0 193.1h.01M318.0 193.1h.01M330.0 193.1h.01M342.0 193.1h.01M354.0 193.1h.01M366.0 193.1h.01M378.0 193.1h.01M390.0 193.1h.01M402.0 193.1h.01M414.0 193.1h.01M426.0 193.1h.01M438.0 193.1h.01M450.0 193.1h.01M462.0 193.1h.01M474.0 193.1h.01M288.0 203.5h.01M300.0 203.5h.01M312.0 203.5h.01M324.0 203.5h.01M336.0 203.5h.01M348.0 203.5h.01M360.0 203.5h.01M372.0 203.5h.01M384.0 203.5h.01M396.0 203.5h.01M408.0 203.5h.01M420.0 203.5h.01M432.0 203.5h.01M444.0 203.5h.01M456.0 203.5h.01M468.0 203.5h.01M282.0 213.8h.01M294.0 213.8h.01M306.0 213.8h.01M318.0 213.8h.01M330.0 213.8h.01M342.0 213.8h.01M354.0 213.8h.01M366.0 213.8h.01M378.0 213.8h.01M390.0 213.8h.01M402.0 213.8h.01M414.0 213.8h.01M426.0 213.8h.01M438.0 213.8h.01M450.0 213.8h.01M462.0 213.8h.01M474.0 213.8h.01M276.0 224.2h.01M288.0 224.2h.01M300.0 224.2h.01M312.0 224.2h.01M324.0 224.2h.01M336.0 224.2h.01M348.0 224.2h.01M360.0 224.2h.01M372.0 224.2h.01M384.0 224.2h.01M396.0 224.2h.01M408.0 224.2h.01M420.0 224.2h.01M432.0 224.2h.01M444.0 224.2h.01M456.0 224.2h.01M468.0 224.2h.01M282.0 234.6h.01M294.0 234.6h.01M306.0 234.6h.01M318.0 234.6h.01M330.0 234.6h.01M342.0 234.6h.01M354.0 234.6h.01M366.0 234.6h.01M378.0 234.6h.01M390.0 234.6h.01M402.0 234.6h.01M414.0 234.6h.01M426.0 234.6h.01M438.0 234.6h.01M450.0 234.6h.01M462.0 234.6h.01M474.0 234.6h.01M276.0 245.0h.01M288.0 245.0h.01M300.0 245.0h.01M312.0 245.0h.01M324.0 245.0h.01M336.0 245.0h.01M348.0 245.0h.01M360.0 245.0h.01M372.0 245.0h.01M384.0 245.0h.01M396.0 245.0h.01M408.0 245.0h.01M420.0 245.0h.01M432.0 245.0h.01M444.0 245.0h.01M456.0 245.0h.01M468.0 245.0h.01M282.0 255.4h.01M294.0 255.4h.01M306.0 255.4h.01M318.0 255.4h.01M330.0 255.4h.01M342.0 255.4h.01M354.0 255.4h.01M366.0 255.4h.01M378.0 255.4h.01M390.0 255.4h.01M402.0 255.4h.01M414.0 255.4h.01M426.0 255.4h.01M438.0 255.4h.01M450.0 255.4h.01M462.0 255.4h.01M132.0 265.8h.01M144.0 265.8h.01M156.0 265.8h.01M168.0 265.8h.01M180.0 265.8h.01M276.0 265.8h.01M288.0 265.8h.01M300.0 265.8h.01M312.0 265.8h.01M324.0 265.8h.01M336.0 265.8h.01M348.0 265.8h.01M360.0 265.8h.01M372.0 265.8h.01M408.0 265.8h.01M420.0 265.8h.01M432.0 265.8h.01M444.0 265.8h.01M114.0 276.2h.01M126.0 276.2h.01M138.0 276.2h.01M150.0 276.2h.01M162.0 276.2h.01M174.0 276.2h.01M186.0 276.2h.01M198.0 276.2h.01M210.0 276.2h.01M222.0 276.2h.01M234.0 276.2h.01M246.0 276.2h.01M258.0 276.2h.01M270.0 276.2h.01M282.0 276.2h.01M294.0 276.2h.01M306.0 276.2h.01M318.0 276.2h.01M330.0 276.2h.01M342.0 276.2h.01M354.0 276.2h.01M366.0 276.2h.01M108.0 286.6h.01M120.0 286.6h.01M132.0 286.6h.01M144.0 286.6h.01M156.0 286.6h.01M168.0 286.6h.01M180.0 286.6h.01M192.0 286.6h.01M204.0 286.6h.01M216.0 286.6h.01M228.0 286.6h.01M240.0 286.6h.01M252.0 286.6h.01M264.0 286.6h.01M276.0 286.6h.01M288.0 286.6h.01M300.0 286.6h.01M312.0 286.6h.01M324.0 286.6h.01M336.0 286.6h.01M348.0 286.6h.01M360.0 286.6h.01M114.0 297.0h.01M126.0 297.0h.01M138.0 297.0h.01M150.0 297.0h.01M162.0 297.0h.01M174.0 297.0h.01M186.0 297.0h.01M198.0 297.0h.01M210.0 297.0h.01M222.0 297.0h.01M234.0 297.0h.01M246.0 297.0h.01M258.0 297.0h.01M270.0 297.0h.01M282.0 297.0h.01M294.0 297.0h.01M306.0 297.0h.01M318.0 297.0h.01M330.0 297.0h.01M342.0 297.0h.01M354.0 297.0h.01M366.0 297.0h.01M132.0 307.4h.01M144.0 307.4h.01M156.0 307.4h.01M168.0 307.4h.01M180.0 307.4h.01M192.0 307.4h.01M204.0 307.4h.01M216.0 307.4h.01M228.0 307.4h.01M240.0 307.4h.01M252.0 307.4h.01M264.0 307.4h.01M276.0 307.4h.01M288.0 307.4h.01M300.0 307.4h.01M312.0 307.4h.01M324.0 307.4h.01M336.0 307.4h.01M348.0 307.4h.01M360.0 307.4h.01M174.0 317.8h.01M186.0 317.8h.01M198.0 317.8h.01M210.0 317.8h.01M222.0 317.8h.01M234.0 317.8h.01M246.0 317.8h.01M258.0 317.8h.01M270.0 317.8h.01M282.0 317.8h.01M294.0 317.8h.01M306.0 317.8h.01M318.0 317.8h.01M330.0 317.8h.01M342.0 317.8h.01M354.0 317.8h.01M168.0 328.2h.01M180.0 328.2h.01M192.0 328.2h.01M204.0 328.2h.01M216.0 328.2h.01M228.0 328.2h.01M240.0 328.2h.01M252.0 328.2h.01M264.0 328.2h.01M276.0 328.2h.01M288.0 328.2h.01M300.0 328.2h.01M312.0 328.2h.01M324.0 328.2h.01M336.0 328.2h.01M348.0 328.2h.01M162.0 338.6h.01M174.0 338.6h.01M186.0 338.6h.01M198.0 338.6h.01M210.0 338.6h.01M222.0 338.6h.01M234.0 338.6h.01M246.0 338.6h.01M258.0 338.6h.01M270.0 338.6h.01M282.0 338.6h.01M294.0 338.6h.01M306.0 338.6h.01M318.0 338.6h.01M156.0 348.9h.01M168.0 348.9h.01M180.0 348.9h.01M192.0 348.9h.01M204.0 348.9h.01M216.0 348.9h.01M228.0 348.9h.01M240.0 348.9h.01M252.0 348.9h.01M264.0 348.9h.01M276.0 348.9h.01M288.0 348.9h.01M300.0 348.9h.01M312.0 348.9h.01M162.0 359.3h.01M174.0 359.3h.01M186.0 359.3h.01M198.0 359.3h.01M210.0 359.3h.01M222.0 359.3h.01M234.0 359.3h.01M246.0 359.3h.01M258.0 359.3h.01M270.0 359.3h.01M282.0 359.3h.01M294.0 359.3h.01M306.0 359.3h.01M156.0 369.7h.01M168.0 369.7h.01M180.0 369.7h.01M192.0 369.7h.01M204.0 369.7h.01M216.0 369.7h.01M228.0 369.7h.01M240.0 369.7h.01M252.0 369.7h.01M264.0 369.7h.01M276.0 369.7h.01M288.0 369.7h.01M300.0 369.7h.01M150.0 380.1h.01M162.0 380.1h.01M174.0 380.1h.01M186.0 380.1h.01M198.0 380.1h.01M210.0 380.1h.01M222.0 380.1h.01M234.0 380.1h.01M246.0 380.1h.01M258.0 380.1h.01M270.0 380.1h.01M282.0 380.1h.01M294.0 380.1h.01M366.0 380.1h.01M156.0 390.5h.01M168.0 390.5h.01M180.0 390.5h.01M192.0 390.5h.01M204.0 390.5h.01M216.0 390.5h.01M228.0 390.5h.01M240.0 390.5h.01M252.0 390.5h.01M264.0 390.5h.01M276.0 390.5h.01M288.0 390.5h.01M162.0 400.9h.01M174.0 400.9h.01M186.0 400.9h.01M198.0 400.9h.01M210.0 400.9h.01M222.0 400.9h.01M234.0 400.9h.01M246.0 400.9h.01M258.0 400.9h.01M270.0 400.9h.01M282.0 400.9h.01M294.0 400.9h.01M330.0 400.9h.01M156.0 411.3h.01M168.0 411.3h.01M180.0 411.3h.01M192.0 411.3h.01M204.0 411.3h.01M216.0 411.3h.01M228.0 411.3h.01M240.0 411.3h.01M252.0 411.3h.01M264.0 411.3h.01M276.0 411.3h.01M288.0 411.3h.01M300.0 411.3h.01M150.0 421.7h.01M162.0 421.7h.01M174.0 421.7h.01M186.0 421.7h.01M198.0 421.7h.01M210.0 421.7h.01M222.0 421.7h.01M234.0 421.7h.01M246.0 421.7h.01M258.0 421.7h.01M270.0 421.7h.01M282.0 421.7h.01M156.0 432.1h.01M168.0 432.1h.01M180.0 432.1h.01M192.0 432.1h.01M204.0 432.1h.01M216.0 432.1h.01M228.0 432.1h.01M240.0 432.1h.01M252.0 432.1h.01M264.0 432.1h.01M276.0 432.1h.01M150.0 442.5h.01M162.0 442.5h.01M174.0 442.5h.01M186.0 442.5h.01M198.0 442.5h.01M210.0 442.5h.01M222.0 442.5h.01M234.0 442.5h.01M246.0 442.5h.01M258.0 442.5h.01M270.0 442.5h.01M144.0 452.9h.01M156.0 452.9h.01M168.0 452.9h.01M180.0 452.9h.01M192.0 452.9h.01M204.0 452.9h.01M216.0 452.9h.01M228.0 452.9h.01M240.0 452.9h.01M252.0 452.9h.01M174.0 463.3h.01M186.0 463.3h.01M198.0 463.3h.01M210.0 463.3h.01M222.0 463.3h.01M234.0 463.3h.01M246.0 463.3h.01M258.0 463.3h.01M168.0 473.7h.01M180.0 473.7h.01M192.0 473.7h.01M174.0 484.0h.01M186.0 484.0h.01"/><path class="carte__pt" d="M120.0 307.4h.01M114.0 317.8h.01M126.0 317.8h.01M138.0 317.8h.01M150.0 317.8h.01M162.0 317.8h.01M120.0 328.2h.01M132.0 328.2h.01M144.0 328.2h.01M156.0 328.2h.01M126.0 338.6h.01M138.0 338.6h.01M150.0 338.6h.01M120.0 348.9h.01M132.0 348.9h.01M144.0 348.9h.01M114.0 359.3h.01M126.0 359.3h.01M138.0 359.3h.01M150.0 359.3h.01M120.0 369.7h.01M132.0 369.7h.01M144.0 369.7h.01M114.0 380.1h.01M126.0 380.1h.01M138.0 380.1h.01M108.0 390.5h.01M120.0 390.5h.01M132.0 390.5h.01M144.0 390.5h.01M102.0 400.9h.01M114.0 400.9h.01M126.0 400.9h.01M138.0 400.9h.01M150.0 400.9h.01M108.0 411.3h.01M120.0 411.3h.01M132.0 411.3h.01M144.0 411.3h.01M114.0 421.7h.01M126.0 421.7h.01M138.0 421.7h.01M120.0 432.1h.01M132.0 432.1h.01M144.0 432.1h.01M114.0 442.5h.01M126.0 442.5h.01M138.0 442.5h.01M120.0 452.9h.01M132.0 452.9h.01"/><g class="carte__reperes" stroke-width="1.6"><circle cx="299.5" cy="23.7" r="6.5"/><circle cx="352.8" cy="103.2" r="6.5"/></g></svg><!--carte:fin-->
+            <span class="carte__nom carte__nom--pt" aria-hidden="true">Portugal</span>
+            <span class="carte__nom carte__nom--londres" aria-hidden="true">Londres</span>
+            <span class="carte__nom carte__nom--paris" aria-hidden="true">Paris</span>
+          </div>
+          <figcaption>
+            <span class="legende">Portugal, centre de services Justdoo</span>
+            <span class="legende legende--anneau">Londres, siège d’Empakt</span>
+          </figcaption>
+        </figure>
+        <div class="portugal__texte revele">
+          <dl class="faits">
+            <div>
+              <dt>1&nbsp;h</dt>
+              <dd>de décalage avec Paris. Notre équipe travaille pendant vos journées.</dd>
+            </div>
+            <div>
+              <dt>UE</dt>
+              <dd>Le Portugal est dans l’Union européenne&nbsp;: le RGPD s’y applique, comme chez vous.</dd>
+            </div>
+            <div>
+              <dt>Odoo</dt>
+              <dd>Une équipe formée à l’outil dès le premier jour.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grille assurances revele">
+        <p><strong>Vous décidez.</strong> Les paiements et les décisions restent chez vous&nbsp;: nous préparons, vous validez.</p>
+        <p><strong>Avec votre expert-comptable.</strong> La tenue de vos comptes reste sa mission&nbsp;: nous lui préparons des pièces classées et à jour.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== DEUX MODES ====================== -->
+  <section class="sec sec--filet" id="modes" aria-labelledby="titre-modes">
+    <div class="wrap">
+      <div class="grille sec__tete revele">
+        <p class="surtitre">Deux modes de travail</p>
+        <h2 id="titre-modes"><span>Vous gardez la main.</span> <span>Ou vous nous la confiez.</span></h2>
+        <p class="chapo">Dans les deux cas, vous restez maître de votre entreprise. Nous vous déchargeons du back-office.</p>
+      </div>
+      <div class="grille modes">
+        <article class="mode revele">
+          <p class="mode__etiquette">En autonomie</p>
+          <h3>Nous installons, vos équipes opèrent.</h3>
+          <p>Nous déployons Odoo, nous formons vos collaborateurs et nous les accompagnons jusqu’à ce qu’ils soient à l’aise. Ensuite, c’est votre outil.</p>
+          <ul class="puces" role="list">
+            <li>Odoo configuré pour vos processus</li>
+            <li>Programme de formation structuré</li>
+            <li>Accompagnement jusqu’à l’autonomie</li>
+          </ul>
+          <p class="mode__prix"><span>Tarification</span>Projet au forfait</p>
+        </article>
+        <article class="mode revele" style="--retard:.08s">
+          <p class="mode__etiquette">En délégation</p>
+          <h3>Nous opérons, vous pilotez.</h3>
+          <p>Notre équipe prend en charge vos cycles administratifs de bout en bout, dans votre Odoo. Vous suivez tout, vous validez l’essentiel, vous retrouvez du temps.</p>
+          <ul class="puces" role="list">
+            <li>Cycles ventes, achats et trésorerie</li>
+            <li>Une équipe au Portugal, formée à Odoo</li>
+            <li>Une capacité qui suit votre croissance</li>
+          </ul>
+          <p class="mode__prix"><span>Tarification</span>Forfait mensuel</p>
+        </article>
+      </div>
+      <p class="modes__note revele">Le mode se choisit selon vos équipes, et il peut évoluer avec vous.</p>
+    </div>
+  </section>
+
+  <!-- ====================== EMPAKT ====================== -->
+  <section class="sec empakt" id="empakt" aria-labelledby="titre-empakt">
+    <div class="wrap">
+      <div class="grille empakt__haut">
+        <div class="empakt__intro revele">
+          <p class="surtitre">D’où nous venons</p>
+          <h2 id="titre-empakt">Derrière Justdoo, il y a Empakt.</h2>
+          <p class="chapo">Empakt est un cabinet de conseil en transformation fondé en 2019 et basé à Londres. Ses équipes conduisent des programmes complexes pour des organisations comme Vodafone, Ricoh ou Vantage Towers. Justdoo met cette exigence, et les valeurs qui vont avec, à la portée des PME.</p>
+          <p class="empakt__nom">Empakt, c’est la contraction d’<em>empathie</em> et d’<em>impact</em>.</p>
+        </div>
+        <figure class="empakt__image revele" style="--retard:.1s">
+          <img src="assets/empakt-spirale-foret.webp" alt="Vue aérienne d’une rivière qui dessine une spirale au milieu d’une forêt, en écho au symbole d’Empakt." width="1280" height="853" loading="lazy">
+        </figure>
+      </div>
+
+      <ol class="grille valeurs" role="list">
+        <li class="valeur revele">
+          <span class="valeur__num" aria-hidden="true">01</span>
+          <h3>Empathie</h3>
+          <p class="valeur__devise">Comprendre avant d’agir.</p>
+          <p>Nous commençons par apprendre votre entreprise de l’intérieur&nbsp;: votre métier, vos habitudes, vos contraintes. La confiance se gagne avant le droit de proposer.</p>
+        </li>
+        <li class="valeur revele" style="--retard:.08s">
+          <span class="valeur__num" aria-hidden="true">02</span>
+          <h3>Impact</h3>
+          <p class="valeur__devise">Faire, pas seulement conseiller.</p>
+          <p>Nous ne livrons pas des recommandations. Nous installons, nous opérons, et nous vous rendons des comptes.</p>
+        </li>
+        <li class="valeur revele" style="--retard:.16s">
+          <span class="valeur__num" aria-hidden="true">03</span>
+          <h3>Transmission</h3>
+          <p class="valeur__devise">Vous laisser plus forts.</p>
+          <p>Notre but n’est pas de vous rendre dépendants. Nous formons vos équipes jusqu’à l’autonomie, et quand nous opérons pour vous, tout se passe dans votre Odoo, sous vos yeux.</p>
+        </li>
+      </ol>
+
+      <div class="grille empakt__bas revele">
+        <blockquote class="citation">
+          <p>«&nbsp;Le vrai livrable n’est ni un document ni un système. C’est l’équipe. Quand je pars, l’équipe tourne. C’est à cela que se mesure le succès.&nbsp;»</p>
+          <footer>Youcef Ramdane, fondateur d’Empakt</footer>
+        </blockquote>
+        <img class="empakt__logo" src="assets/empakt-logo-blanc.svg" alt="Empakt, together, to get there" lang="en" width="336" height="96" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== CONTACT ====================== -->
+  <section class="sec contact" id="contact" aria-labelledby="titre-contact">
+    <div class="wrap grille contact__grille">
+      <div class="contact__texte">
+        <h2 id="titre-contact">Reprenez votre temps.</h2>
+        <p class="chapo">Racontez-nous où vous en êtes. Un premier échange suffit pour voir ce que nous pouvons prendre en charge, sans engagement.</p>
+      </div>
+      <form class="formulaire" id="formulaire" novalidate>
+        <div class="champ">
+          <label for="f-nom">Prénom et nom</label>
+          <input id="f-nom" name="nom" type="text" autocomplete="name" required aria-describedby="e-nom">
+          <p class="champ__erreur" id="e-nom" role="alert"></p>
+        </div>
+        <div class="champ">
+          <label for="f-email">Email professionnel</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="e-email">
+          <p class="champ__erreur" id="e-email" role="alert"></p>
+        </div>
+        <div class="champ">
+          <label for="f-societe">Société <span>(facultatif)</span></label>
+          <input id="f-societe" name="societe" type="text" autocomplete="organization">
+        </div>
+        <div class="champ">
+          <label for="f-message">Votre situation en quelques mots <span>(facultatif)</span></label>
+          <textarea id="f-message" name="message" rows="3"></textarea>
+        </div>
+        <input type="hidden" id="f-formule" name="formule" value="">
+        <div class="piege" aria-hidden="true">
+          <label for="f-site">Ne pas remplir ce champ</label>
+          <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button class="btn" type="submit">Envoyer ma demande</button>
+        <p class="formulaire__etat" id="formulaire-etat" role="status"></p>
+        <p class="formulaire__mention">Vos informations servent uniquement à vous recontacter.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied">
+  <div class="wrap">
+    <div class="grille pied__haut">
+      <div class="pied__marque">
+        <a class="logo" href="#haut" aria-label="Justdoo, retour en haut de page">
+          <span class="logo__mot" aria-hidden="true">justd<span class="bascule bascule--logo est-active"><span class="bascule__o"></span><span class="bascule__point"></span></span></span>
+        </a>
+        <p>Odoo, IA et back-office externalisé pour les PME.</p>
+        <a class="langue" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
+      </div>
+      <nav aria-label="Navigation de pied de page">
+        <a href="#offre">L’offre</a>
+        <a href="#back-office">Le centre de services</a>
+        <a href="#modes">Deux modes</a>
+        <a href="#empakt">Empakt</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="pied__porte">
+        <p>Derrière Justdoo, il y a</p>
+        <img src="assets/empakt-logo-vert.svg" alt="Empakt" width="336" height="96" loading="lazy">
+      </div>
+    </div>
+    <p class="pied__bas">© 2026 Justdoo. Odoo est une marque déposée d’Odoo S.A., société indépendante de Justdoo.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var mouvementReduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function tous(selecteur, racine) { return [].slice.call((racine || document).querySelectorAll(selecteur)); }
+
+  /* ---------- En-tête : filet au défilement ---------- */
+  var entete = document.getElementById('entete');
+  function etatEntete() { entete.classList.toggle('entete--defile', window.scrollY > 8); }
+  etatEntete();
+  window.addEventListener('scroll', etatEntete, { passive: true });
+
+  /* ---------- Bascule de langue ----------
+     L'aperçu au survol ne s'arme qu'une fois le pointeur vu ailleurs que sur la bascule. Après un clic,
+     la page d'arrivée s'ouvre avec le pointeur encore posé dessus : le point doit rester du côté de sa langue. */
+  function armerBascule(evt) {
+    if (evt.target && evt.target.closest && evt.target.closest('.langue')) return;
+    document.documentElement.classList.add('bascule-armee');
+    document.removeEventListener('pointermove', armerBascule);
+  }
+  document.addEventListener('pointermove', armerBascule, { passive: true });
+
+  /* ---------- Apparition au défilement ---------- */
+  var aReveler = tous('.revele');
+  if (mouvementReduit || !('IntersectionObserver' in window)) {
+    aReveler.forEach(function (el) { el.classList.add('est-vu'); });
+  } else {
+    var veilleur = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('est-vu'); veilleur.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    aReveler.forEach(function (el) { veilleur.observe(el); });
+  }
+
+  /* ---------- Journal du héros ----------
+     Les tâches faites s'allument une à une. Les paiements, eux, attendent le visiteur :
+     c'est lui qui bascule l'interrupteur (« aucun paiement sans votre validation »). */
+  var journal = document.getElementById('journal');
+  if (journal && !mouvementReduit) {
+    var faites = tous('.est-fait', journal);
+    faites.forEach(function (l) { l.classList.remove('est-fait'); });
+    faites.forEach(function (l, i) {
+      setTimeout(function () { l.classList.add('est-fait'); }, 700 + i * 420);
+    });
+  }
+  var lignePaiements = document.getElementById('ligne-paiements');
+  if (lignePaiements) {
+    var valider = lignePaiements.querySelector('.journal__valider');
+    valider.addEventListener('click', function () {
+      var oui = valider.getAttribute('aria-checked') !== 'true';
+      valider.setAttribute('aria-checked', String(oui));
+      lignePaiements.classList.toggle('est-fait', oui);
+    });
+  }
+
+  /* ---------- Constat : les trois métiers passent à Justdoo ----------
+     Décoratif. Chaque interrupteur s'allume peu après son entrée à l'écran (« C'est encore vous » devient
+     « Justdoo s'en charge ») ; ceux qui arrivent ensemble s'allument l'un après l'autre.
+     Sans script ou si le mouvement est réduit, ils sont allumés d'emblée. */
+  var metiers = tous('.role__choix');
+  if (metiers.length && !mouvementReduit && 'IntersectionObserver' in window) {
+    metiers.forEach(function (m) { m.classList.remove('est-fait'); });
+    var veilleMetiers = new IntersectionObserver(function (entrees) {
+      var rang = 0;
+      entrees.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var cible = e.target;
+        veilleMetiers.unobserve(cible);
+        setTimeout(function () { cible.classList.add('est-fait'); }, 600 + rang * 450);
+        rang += 1;
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 1 });
+    metiers.forEach(function (m) { veilleMetiers.observe(m); });
+  }
+
+  /* ---------- Offre à la carte ----------
+     Chaque option est une case à cocher (rôle « interrupteur »). Deux cases qui porteraient le même
+     data-service resteraient synchronisées ; il n'y en a plus depuis que le constat est décoratif. */
+  var cases = tous('input[data-service]');
+  var cartes = tous('.service');
+  var listeChoix = document.getElementById('choix-liste');
+  var champFormule = document.getElementById('f-formule');
+  var texteVide = listeChoix ? listeChoix.textContent : '';
+
+  function propager(source) {
+    cases.forEach(function (autre) {
+      if (autre !== source && autre.getAttribute('data-service') === source.getAttribute('data-service')) autre.checked = source.checked;
+    });
+  }
+  function resumer() {
+    var parties = [];
+    var pourMessage = [];
+    cartes.forEach(function (carte) {
+      var actives = tous('.options input:checked', carte).map(function (c) { return c.getAttribute('data-libelle'); });
+      var tout = carte.querySelector('.service__tout');
+      if (tout) tout.setAttribute('aria-checked', String(actives.length > 0));
+      carte.classList.toggle('est-choisi', actives.length > 0);
+      if (actives.length) {
+        parties.push(carte.getAttribute('data-nom') + ' : ' + actives.join(', '));
+        pourMessage.push(carte.getAttribute('data-nom') + ' (' + actives.join(', ') + ')');
+      }
+    });
+    var texte = parties.join(' · ');
+    if (listeChoix) listeChoix.textContent = texte || texteVide;
+    if (champFormule) champFormule.value = texte;
+    resumer.phrase = pourMessage.length ? 'Ma formule : ' + pourMessage.join(', ') + '.' : '';
+    return texte;
+  }
+  document.addEventListener('change', function (evt) {
+    var c = evt.target;
+    if (!c || !c.matches || !c.matches('input[data-service]')) return;
+    propager(c);
+    resumer();
+  });
+  cartes.forEach(function (carte) {
+    var tout = carte.querySelector('.service__tout');
+    if (!tout) return;
+    tout.addEventListener('click', function () {
+      var activer = tout.getAttribute('aria-checked') !== 'true';
+      tous('.options input[data-service]', carte).forEach(function (c) { c.checked = activer; propager(c); });
+      resumer();
+    });
+  });
+  /* Au chargement : le navigateur peut avoir restauré des cases cochées. */
+  tous('.options input[data-service]').forEach(propager);
+  resumer();
+
+  /* « Parler de cette formule » : la sélection est reportée dans le message, sans écraser un texte déjà saisi. */
+  var boutonChoix = document.getElementById('choix-bouton');
+  var message = document.getElementById('f-message');
+  if (boutonChoix && message) {
+    boutonChoix.addEventListener('click', function () {
+      resumer();
+      var phrase = resumer.phrase;
+      var auto = message.getAttribute('data-auto') || '';
+      if (!phrase || (message.value.trim() && message.value !== auto)) return;
+      message.value = phrase;
+      message.setAttribute('data-auto', phrase);
+    });
+  }
+
+  /* ---------- Formulaire de contact ----------
+     ADRESSE_ENVOI : adresse du service qui recevra les demandes (requête POST, JSON).
+     Tant qu'elle est vide, le formulaire valide la saisie mais n'envoie rien. */
+  var ADRESSE_ENVOI = '';
+  var formulaire = document.getElementById('formulaire');
+  var etat = document.getElementById('formulaire-etat');
+  var regles = [
+    { champ: 'f-nom', erreur: 'e-nom', vide: 'Indiquez votre prénom et votre nom.' },
+    { champ: 'f-email', erreur: 'e-email', vide: 'Indiquez votre adresse email.', invalide: 'Cette adresse email semble incomplète. Exemple : prenom@societe.fr' }
+  ];
+  function controler(regle) {
+    var champ = document.getElementById(regle.champ);
+    var zone = document.getElementById(regle.erreur);
+    var texte = '';
+    if (!champ.value.trim()) texte = regle.vide;
+    else if (!champ.checkValidity()) texte = regle.invalide || regle.vide;
+    zone.textContent = texte;
+    if (texte) champ.setAttribute('aria-invalid', 'true'); else champ.removeAttribute('aria-invalid');
+    return !texte;
+  }
+  if (formulaire) {
+    regles.forEach(function (regle) {
+      document.getElementById(regle.champ).addEventListener('blur', function () {
+        if (this.value.trim() || this.getAttribute('aria-invalid')) controler(regle);
+      });
+    });
+    formulaire.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      etat.textContent = '';
+      var fautes = regles.filter(function (regle) { return !controler(regle); });
+      if (fautes.length) { document.getElementById(fautes[0].champ).focus(); return; }
+      if (document.getElementById('f-site').value) return; /* champ piège rempli : robot */
+      if (!ADRESSE_ENVOI) {
+        etat.textContent = 'Maquette : l’envoi du formulaire n’est pas encore branché.';
+        return;
+      }
+      var bouton = formulaire.querySelector('button[type="submit"]');
+      bouton.disabled = true;
+      var donnees = {};
+      new FormData(formulaire).forEach(function (v, k) { if (k !== 'site') donnees[k] = v; });
+      fetch(ADRESSE_ENVOI, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(donnees) })
+        .then(function (r) { if (!r.ok) throw new Error(String(r.status)); })
+        .then(function () { formulaire.reset(); etat.textContent = 'Merci, votre demande est bien partie. Nous revenons vers vous rapidement.'; })
+        .catch(function () { etat.textContent = 'L’envoi n’a pas abouti. Réessayez dans un instant.'; })
+        .then(function () { bouton.disabled = false; });
+    });
+  }
+})();
+</script>
+</body>
+</html>
