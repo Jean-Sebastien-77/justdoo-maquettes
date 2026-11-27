@@ -18,6 +18,18 @@
 <script>
   /* Avant le premier rendu : signale que JavaScript est actif (apparitions au défilement). */
   document.documentElement.classList.add('js');
+  /* Outil de maquette : la palette retenue (ou demandée par ?palette=nom) est posée avant le premier rendu. */
+  try {
+    var paletteVoulue = (/[?&]palette=([a-z-]+)/.exec(window.location.search) || [])[1] || window.localStorage.getItem('justdoo-palette');
+    if (paletteVoulue) document.documentElement.setAttribute('data-palette', paletteVoulue);
+    /* Outil de maquette : même principe pour le logo retenu (ou demandé par ?logo=nom), dessiné par assets/logos.js.
+       Si ce fichier ne se charge pas, le logo d'origine revient au bout de trois secondes. */
+    var logoVoulu = (/[?&]logo=([a-z]+)/.exec(window.location.search) || [])[1] || window.localStorage.getItem('justdoo-logo');
+    if (logoVoulu) {
+      document.documentElement.setAttribute('data-logo', logoVoulu);
+      window.setTimeout(function () { if (!document.querySelector('.logo__mot[data-logo]')) document.documentElement.removeAttribute('data-logo'); }, 3000);
+    }
+  } catch (e) { /* stockage indisponible : la palette d'origine s'affiche */ }
 </script>
 <style>
 /* ==========================================================================
@@ -36,6 +48,7 @@
   --encre-douce: color-mix(in srgb, var(--amethyste) 76%, var(--papier));
   --accent: var(--corail);
   --accent-clair: var(--peche);                                /* accent lisible sur fond sombre */
+  --marque: var(--accent);                                     /* petites marques sur le papier : puces, carte, bascule de langue */
   --sur-accent: color-mix(in srgb, var(--amethyste) 85%, #000); /* texte posé sur le corail */
   --bouton: var(--amethyste);
   --sur-bouton: var(--papier);
@@ -58,6 +71,32 @@
   --doux: cubic-bezier(.2, .7, .2, 1);
 }
 .sec--bloc { --encre-douce: var(--encre); --repere: var(--encre); }
+
+/* Palettes de la maquette (exercice du 26/11/2026). Le choix se fait dans le panneau
+   « Couleurs maquette » (section 8). Une palette redéfinit quatre teintes, tout le reste en découle.
+   Les noms des variables datent de la palette d'origine : --amethyste = teinte foncée (textes, boutons, bloc Empakt),
+   --orchidee = teinte vive (surtitres, carte), --corail = accent (interrupteur, disque), --peche = teinte claire.
+   Chaque palette a été contrôlée : tous les textes restent au-dessus de 4,5 de contraste. */
+[data-palette="origine"] { --amethyste: #4A148C; --orchidee: #A842C4; --corail: #FF7043; --peche: #FFCC80; }
+[data-palette="foret"]   { --amethyste: #12423A; --orchidee: #3A7860; --corail: #F28B4B; --peche: #E6DFC4; }
+[data-palette="encre"]   { --amethyste: #1E2B2E; --orchidee: #6B6557; --corail: #FF7043; --peche: #E8E0D2; }
+[data-palette="canard"]  { --amethyste: #0B3C49; --orchidee: #1F5F6E; --corail: #C5F04A; --peche: #D9E9E6; }
+[data-palette="violet-lime"]   { --amethyste: #4A148C; --orchidee: #1E7B5A; --corail: #C5F04A; --peche: #D6EDBC; }
+[data-palette="violet-menthe"] { --amethyste: #714B67; --orchidee: #346C64; --corail: #64D4BC; --peche: #E8E0D2; } /* violet de marque d'Odoo (--primary de odoo.com), menthe et vert sombre mesurés sur ses icônes, sable de la palette « encre » */
+/* Palettes à accent clair (lime, menthe) : l'accent sert lui-même d'accent sur fond sombre, et les petites marques
+   posées sur le papier prennent une teinte plus soutenue, sinon elles disparaissent. Pour le canard, un mélange de
+   l'accent et de la teinte foncée ; pour les violets, la teinte vive (un vert), car ce mélange y donnerait un kaki terne. */
+[data-palette="canard"] { --accent-clair: var(--corail); --marque: color-mix(in srgb, var(--corail) 62%, var(--amethyste)); }
+[data-palette="violet-lime"] { --accent-clair: var(--corail); --marque: var(--orchidee); }
+/* Le violet d'Odoo est plus clair que le nôtre : le texte doux se rapproche du texte plein, et les accents du bloc
+   sombre restent dans la teinte claire (réglage par défaut), plus lisible que la menthe sur ce violet. */
+[data-palette="violet-menthe"] { --marque: var(--orchidee); --encre-douce: color-mix(in srgb, var(--amethyste) 92%, var(--papier)); }
+/* Hors palette d'origine, les quatre visuels (générés dans les violets) prennent la teinte de la palette par fusion
+   en luminosité sur un fond de couleur. Ils seront à refaire dans la palette retenue. */
+html[data-palette]:not([data-palette="origine"]) .visuel { background: var(--orchidee); }
+html[data-palette]:not([data-palette="origine"]) .visuel img { mix-blend-mode: luminosity; }
+/* Changement de palette : la nouvelle couleur s'ouvre en cercle depuis l'endroit du clic. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
 /* ==========================================================================
    2. BASE
@@ -162,7 +201,7 @@ html:not(.js) .avec-js { display: none; }
 
 .puces li { position: relative; padding-left: 1.35rem; }
 .puces li + li { margin-top: .55rem; }
-.puces li::before { content: ""; position: absolute; left: 0; top: .58em; width: .5rem; height: .5rem; border-radius: 50%; background: var(--accent); }
+.puces li::before { content: ""; position: absolute; left: 0; top: .58em; width: .5rem; height: .5rem; border-radius: 50%; background: var(--marque); }
 
 /* Emplacement d'image. L'attribut data-provisoire affiche une étiquette tant que
    le visuel définitif n'est pas en place : le retirer en même temps que l'image. */
@@ -197,7 +236,7 @@ html:not(.js) .avec-js { display: none; }
 .langue .bascule { --h: 1.25rem; color: var(--encre); }
 html[lang="fr"] .langue__code--fr, html[lang^="en"] .langue__code--uk { font-weight: 800; color: var(--encre); }
 /* Le point corail : à gauche (côté UK) sur la page anglaise, à droite (côté FR) sur la page française. */
-.langue .bascule__point { opacity: 1; transform: none; }
+.langue .bascule__point { opacity: 1; transform: none; background: var(--marque); }
 html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + var(--h) * .2)); }
 /* Au survol, le point glisse vers l'autre langue. L'effet attend la classe bascule-armee, posée par le script
    dès que le pointeur a été vu ailleurs que sur la bascule : sans elle, la page ouverte par un clic (pointeur
@@ -312,7 +351,7 @@ html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + 
 .carte__cadre { position: relative; }
 .carte__svg { width: 100%; }
 .carte__terre { stroke: var(--point-carte); }
-.carte__pt { stroke: var(--accent); }
+.carte__pt { stroke: var(--marque); }
 .js .carte:not(.est-vu) .carte__pt { stroke: var(--point-carte); }
 .js .carte .carte__pt { transition: stroke .9s ease .35s; }
 .carte__reperes { stroke: var(--encre); }
@@ -322,7 +361,7 @@ html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + 
 .carte__nom--paris { left: 76.1%; top: 21.1%; transform: translateY(-50%); }
 .carte figcaption { display: flex; flex-wrap: wrap; gap: .4rem 1.75rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--filet); font-size: .875rem; font-weight: 500; }
 .legende { display: inline-flex; align-items: center; gap: .55rem; }
-.legende::before { content: ""; width: .7rem; height: .7rem; border-radius: 50%; background: var(--accent); }
+.legende::before { content: ""; width: .7rem; height: .7rem; border-radius: 50%; background: var(--marque); }
 .legende--anneau::before { background: transparent; border: 1.5px solid var(--encre); }
 .portugal__texte { grid-column: 8 / -1; }
 .faits div { display: grid; grid-template-columns: 6rem minmax(0, 1fr); column-gap: 1.25rem; align-items: baseline; padding: 1.1rem 0; border-top: 1px solid var(--filet-fort); }
@@ -474,7 +513,86 @@ html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + 
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
   .js .revele { opacity: 1; transform: none; }
-  .js .carte:not(.est-vu) .carte__pt { stroke: var(--accent); }
+  .js .carte:not(.est-vu) .carte__pt { stroke: var(--marque); }
+}
+
+/* ==========================================================================
+   8. OUTIL DE MAQUETTE : COULEURS
+   Panneau flottant pour comparer les palettes. Il n'appartient pas au site : ses couleurs sont neutres et fixes.
+   À retirer, avec son balisage et son script, avant la mise en ligne définitive.
+   ========================================================================== */
+.couleurs { position: fixed; left: 16px; bottom: 16px; z-index: 60; font-family: var(--f-texte); color: #1d1b1a; }
+.couleurs button { font-family: inherit; color: inherit; cursor: pointer; }
+.couleurs :focus-visible { outline-color: #1d1b1a; }
+.couleurs__bouton { display: inline-flex; align-items: center; gap: .6rem; min-height: 2.75rem; padding: .45rem .95rem .45rem .6rem; border: 0; border-radius: 999px; background: #fff; font-size: .8125rem; font-weight: 700; box-shadow: 0 6px 24px rgb(0 0 0 / .16), 0 0 0 1px rgb(0 0 0 / .08); }
+.couleurs__carte { position: absolute; left: 0; bottom: calc(100% + 10px); width: min(19.5rem, calc(100vw - 32px)); padding: 1rem .65rem .65rem; border-radius: 18px; background: #fff; box-shadow: 0 18px 50px rgb(0 0 0 / .22), 0 0 0 1px rgb(0 0 0 / .08); }
+.couleurs__titre { margin: 0 .5rem .2rem; font-size: .6875rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.couleurs__aide { margin: 0 .5rem .6rem; font-size: .8125rem; line-height: 1.4; color: #5e5a57; }
+.pal-choix { display: flex; align-items: center; gap: .75rem; width: 100%; padding: .55rem .5rem; border: 0; border-radius: 12px; background: transparent; font-size: .9375rem; font-weight: 700; line-height: 1.25; text-align: left; transition: background-color .2s ease; }
+.pal-choix:hover, .pal-choix:focus-visible { background: #f3f1ee; }
+.pal-choix small { display: block; margin-top: .1rem; font-size: .75rem; font-weight: 500; color: #5e5a57; }
+.pastilles { display: flex; flex: none; }
+.pastilles i { width: 1.375rem; height: 1.375rem; margin-left: -.45rem; border-radius: 50%; box-shadow: 0 0 0 2px #fff; }
+.pastilles i:first-child { margin-left: 0; background: var(--amethyste); }
+.pastilles i:nth-child(2) { background: var(--orchidee); }
+.pastilles i:nth-child(3) { background: var(--corail); }
+.pastilles i:nth-child(4) { background: var(--peche); }
+.pal-choix .coche { display: grid; place-items: center; flex: none; width: 1.25rem; height: 1.25rem; margin-left: auto; border-radius: 50%; background: #1d1b1a; color: #fff; font-size: .7rem; opacity: 0; transform: scale(.6); transition: opacity .2s ease, transform .3s var(--doux); }
+.pal-choix[aria-pressed="true"] .coche { opacity: 1; transform: none; }
+
+/* ==========================================================================
+   9. OUTIL DE MAQUETTE : PISTES DE LOGO
+   Un bouton du pied de page ouvre une page qui présente trois logos. Un clic en choisit un pour tout le site
+   (en-tête et pied de page) ; le logo suit la palette en cours. Dessins et comportement : assets/logos.js.
+   À retirer, avec son balisage et ce fichier, avant la mise en ligne définitive.
+   ========================================================================== */
+/* Couleurs d'un logo : l'encre du mot, la teinte de milieu du ruban, l'accent (dernier cercle, fin du ruban). */
+.logo__mot, .lgo { --logo-encre: var(--titre); --logo-milieu: var(--orchidee); --logo-accent: var(--marque); }
+.sur-sombre .lgo { --logo-encre: var(--papier); --logo-milieu: var(--peche); --logo-accent: var(--accent); }
+.lgo { display: inline-flex; align-items: baseline; font-family: var(--f-titre); font-weight: 800; line-height: 1; letter-spacing: -0.05em; white-space: nowrap; color: var(--logo-encre); }
+.logo__mot svg, .lgo svg { flex: none; max-width: none; height: .76em; overflow: visible; }
+.logo__mot[data-logo="cercles"], .lgo[data-logo="cercles"] { font-family: 'Outfit', var(--f-titre); font-weight: 600; letter-spacing: -0.02em; }
+/* Tant que le script n'a pas posé le logo choisi, le logo d'origine reste caché : pas de saut d'un logo à l'autre au chargement. */
+html[data-logo="cercles"] .logo__mot:not([data-logo]), html[data-logo="ruban"] .logo__mot:not([data-logo]) { visibility: hidden; }
+
+.pied__outil { margin-top: 1rem; }
+/* Le bouton flottant des couleurs occupe le coin bas gauche : le pied de page garde de la place pour ne pas passer dessous. */
+html.js .pied { padding-bottom: 5rem; }
+.outil-logos { display: inline-flex; align-items: center; min-height: 2.75rem; padding: .5rem 1.15rem; border: 1px solid var(--filet-fort); border-radius: 999px; font-size: .875rem; font-weight: 600; text-decoration: none; transition: border-color .2s ease; }
+.outil-logos:hover { border-color: var(--encre); }
+
+/* La page des logos couvre le site sous l'en-tête, qui reste visible : le logo choisi y change aussitôt.
+   L'outil des couleurs reste par-dessus. Le haut de la page est calé sur le bas de l'en-tête par le script. */
+html.logos-ouverts { overflow: hidden; }
+.logos { position: fixed; inset: 72px 0 0; z-index: 35; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--filet); background: var(--papier); }
+.logos[hidden] { display: none; }
+.logos__in { padding-block: clamp(28px, 4vw, 56px) 7rem; }
+.logos__tete { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 2rem; align-items: start; }
+.logos__tete > * { grid-column: 1; }
+.logos__tete h2 { margin-top: 1rem; font-size: clamp(2rem, 4vw, 3.25rem); outline: none; }
+.logos__aide { max-width: 40rem; margin-top: 1rem; color: var(--encre-douce); }
+.logos__tete .lien { grid-column: 2; grid-row: 1 / span 2; }
+.logos__jeu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gouttiere); margin-top: clamp(24px, 3vw, 40px); }
+.logo-choix { display: flex; flex-direction: column; min-width: 0; padding: 0; border: 1px solid var(--filet-fort); border-radius: 10px; overflow: clip; background: var(--papier); color: var(--encre); text-align: left; cursor: pointer; transition: border-color .2s ease, box-shadow .2s ease; }
+.logo-choix:hover { border-color: var(--encre); }
+.logo-choix[aria-pressed="true"] { border-color: var(--encre); box-shadow: 0 0 0 2px var(--encre); }
+.logo-choix__clair, .logo-choix__sombre { display: grid; place-items: center; }
+.logo-choix__clair { min-height: clamp(150px, 15vw, 210px); font-size: clamp(2.5rem, 5vw, 4.5rem); }
+.logo-choix__sombre { min-height: 5.5rem; background: var(--maison); font-size: clamp(1.75rem, 2.8vw, 2.5rem); }
+.logos .sur-sombre .bascule.est-active .bascule__o { color: var(--maison); }
+.logo-choix__texte { display: grid; gap: .35rem; padding: 1.1rem 1.25rem 0; }
+.logo-choix__texte strong { font-family: var(--f-titre); font-size: 1.375rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.logo-choix__texte span { font-size: .9375rem; color: var(--encre-douce); }
+.logo-choix__etat { display: flex; align-items: center; gap: .55rem; margin-top: auto; padding: 1rem 1.25rem 1.15rem; font-size: .9375rem; font-weight: 600; }
+.logo-choix__etat::before { content: ""; flex: none; width: 1.1rem; height: 1.1rem; border: 1.5px solid var(--filet-fort); border-radius: 50%; }
+.logo-choix[aria-pressed="true"] .logo-choix__etat::before { border-color: var(--encre); background: var(--encre); box-shadow: inset 0 0 0 3px var(--papier); }
+.logo-choix__oui, .logo-choix[aria-pressed="true"] .logo-choix__non { display: none; }
+.logo-choix[aria-pressed="true"] .logo-choix__oui { display: inline; }
+@media (max-width: 860px) {
+  .logos__tete { grid-template-columns: minmax(0, 1fr); }
+  .logos__tete .lien { grid-column: 1; grid-row: auto; }
+  .logos__jeu { grid-template-columns: minmax(0, 1fr); }
+  .logo-choix__clair { font-size: clamp(2.5rem, 12vw, 4.5rem); }
 }
 </style>
 </head>
@@ -923,8 +1041,87 @@ html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + 
       </div>
     </div>
     <p class="pied__bas">© 2026 Justdoo. Odoo est une marque déposée d’Odoo S.A., société indépendante de Justdoo.</p>
+    <p class="pied__outil avec-js"><a class="outil-logos" href="#logos">Pistes de logo</a></p>
   </div>
 </footer>
+
+<!-- Outil de maquette : choix de la palette. À retirer avant la mise en ligne définitive. -->
+<!-- Outil de maquette : la page « Pistes de logo », ouverte par le bouton du pied de page (adresse #logos).
+     À retirer avec assets/logos.js avant la mise en ligne définitive. -->
+<section class="logos avec-js" id="logos" aria-labelledby="logos-titre" hidden>
+  <div class="wrap logos__in">
+    <div class="logos__tete">
+      <p class="surtitre">Outil de maquette</p>
+      <h2 id="logos-titre" tabindex="-1">Pistes de logo</h2>
+      <p class="logos__aide">Cliquez sur un logo pour l’essayer sur tout le site. Il suit les couleurs choisies dans «&nbsp;Couleurs maquette&nbsp;». Cet outil ne sera pas sur le site final.</p>
+      <a class="lien" href="#haut" data-logos-quitter>Retour au site</a>
+    </div>
+    <div class="logos__jeu" role="group" aria-labelledby="logos-titre">
+      <button type="button" class="logo-choix" data-choix="actuel" aria-pressed="true">
+        <span class="logo-choix__clair"><span class="lgo" data-logo="actuel" aria-hidden="true"></span></span>
+        <span class="logo-choix__sombre sur-sombre"><span class="lgo" data-logo="actuel" aria-hidden="true"></span></span>
+        <span class="logo-choix__texte"><strong>L’interrupteur</strong><span>Le logo actuel : les deux «&nbsp;o&nbsp;» logés dans un interrupteur allumé.</span></span>
+        <span class="logo-choix__etat"><span class="logo-choix__oui">Affiché sur le site</span><span class="logo-choix__non">Essayer sur le site</span></span>
+      </button>
+      <button type="button" class="logo-choix" data-choix="cercles" aria-pressed="false">
+        <span class="logo-choix__clair"><span class="lgo" data-logo="cercles" aria-hidden="true"></span></span>
+        <span class="logo-choix__sombre sur-sombre"><span class="lgo" data-logo="cercles" aria-hidden="true"></span></span>
+        <span class="logo-choix__texte"><strong>Trois cercles</strong><span>Le «&nbsp;d&nbsp;» et les deux «&nbsp;o&nbsp;» sont trois cercles identiques, au trait de plus en plus fin. Le dernier prend la couleur d’accent.</span></span>
+        <span class="logo-choix__etat"><span class="logo-choix__oui">Affiché sur le site</span><span class="logo-choix__non">Essayer sur le site</span></span>
+      </button>
+      <button type="button" class="logo-choix" data-choix="ruban" aria-pressed="false">
+        <span class="logo-choix__clair"><span class="lgo" data-logo="ruban" aria-hidden="true"></span></span>
+        <span class="logo-choix__sombre sur-sombre"><span class="lgo" data-logo="ruban" aria-hidden="true"></span></span>
+        <span class="logo-choix__texte"><strong>L’infini</strong><span>Les deux «&nbsp;o&nbsp;» deviennent un ruban continu, qui passe sur lui-même. La couleur suit le ruban.</span></span>
+        <span class="logo-choix__etat"><span class="logo-choix__oui">Affiché sur le site</span><span class="logo-choix__non">Essayer sur le site</span></span>
+      </button>
+    </div>
+  </div>
+</section>
+<script src="assets/logos.js"></script>
+
+<div class="couleurs avec-js" id="couleurs">
+  <button type="button" class="couleurs__bouton" aria-expanded="false" aria-controls="couleurs-carte">
+    <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span>Couleurs maquette</span>
+  </button>
+  <div class="couleurs__carte" id="couleurs-carte" hidden>
+    <p class="couleurs__titre">Couleurs maquette</p>
+    <p class="couleurs__aide">Un clic change toute la page. Cet outil ne sera pas sur le site final.</p>
+    <div role="group" aria-label="Palettes">
+      <button type="button" class="pal-choix" data-palette="origine" aria-pressed="true">
+        <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Améthyste et corail<small>Palette d’origine, violet et orange</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+      <button type="button" class="pal-choix" data-palette="foret" aria-pressed="false">
+        <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Forêt et argile<small>Verts profonds, proche d’Empakt</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+      <button type="button" class="pal-choix" data-palette="encre" aria-pressed="false">
+        <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Encre et sable<small>Neutres, l’orange pour seule couleur</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+      <button type="button" class="pal-choix" data-palette="canard" aria-pressed="false">
+        <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Canard et lime<small>Bleu canard, accent citron vert</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+      <button type="button" class="pal-choix" data-palette="violet-lime" aria-pressed="false">
+        <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Violet et lime<small>Le violet actuel et un citron vert</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+      <button type="button" class="pal-choix" data-palette="violet-menthe" aria-pressed="false">
+        <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Violet et menthe<small>Le violet et les verts d’Odoo, sur sable</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function () {
@@ -947,6 +1144,46 @@ html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + 
     document.removeEventListener('pointermove', armerBascule);
   }
   document.addEventListener('pointermove', armerBascule, { passive: true });
+
+  /* ---------- Couleurs maquette (outil de maquette, à retirer avant la mise en ligne définitive) ----------
+     Un clic change toute la page. Le choix est retenu par le navigateur et vaut pour les deux langues.
+     Les teintes sont dans le CSS : [data-palette="..."]. Une adresse en ?palette=foret ouvre une palette précise. */
+  var outilCouleurs = document.getElementById('couleurs');
+  if (outilCouleurs) {
+    var racine = document.documentElement;
+    var boutonCouleurs = outilCouleurs.querySelector('.couleurs__bouton');
+    var carteCouleurs = document.getElementById('couleurs-carte');
+    var choixPalettes = tous('.pal-choix', outilCouleurs);
+    var poserPalette = function (id) {
+      if (!choixPalettes.some(function (b) { return b.getAttribute('data-palette') === id; })) id = 'origine';
+      racine.setAttribute('data-palette', id);
+      choixPalettes.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-palette') === id)); });
+      try { window.localStorage.setItem('justdoo-palette', id); } catch (e) { /* stockage indisponible : sans gravité */ }
+    };
+    /* La nouvelle palette s'ouvre en cercle depuis le clic, quand le navigateur le permet. */
+    var choisirPalette = function (id, x, y) {
+      if (!document.startViewTransition || mouvementReduit) { poserPalette(id); return; }
+      var rayon = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+      document.startViewTransition(function () { poserPalette(id); }).ready.then(function () {
+        racine.animate(
+          { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rayon + 'px at ' + x + 'px ' + y + 'px)'] },
+          { duration: 750, easing: 'cubic-bezier(.7,0,.2,1)', pseudoElement: '::view-transition-new(root)' }
+        );
+      }).catch(function () {});
+    };
+    var ouvrirCouleurs = function (oui) { carteCouleurs.hidden = !oui; boutonCouleurs.setAttribute('aria-expanded', String(oui)); };
+    boutonCouleurs.addEventListener('click', function () { ouvrirCouleurs(carteCouleurs.hidden); });
+    choixPalettes.forEach(function (b) {
+      b.addEventListener('click', function (evt) {
+        var r = b.getBoundingClientRect();
+        choisirPalette(b.getAttribute('data-palette'), evt.clientX || r.left + 20, evt.clientY || r.top + 20);
+      });
+    });
+    /* Un clic ailleurs referme la carte, sauf dans la page des logos : on y alterne logos et couleurs. */
+    document.addEventListener('click', function (evt) { if (!outilCouleurs.contains(evt.target) && !evt.target.closest('#logos')) ouvrirCouleurs(false); });
+    document.addEventListener('keydown', function (evt) { if (evt.key === 'Escape') ouvrirCouleurs(false); });
+    poserPalette(racine.getAttribute('data-palette') || 'origine');
+  }
 
   /* ---------- Apparition au défilement ---------- */
   var aReveler = tous('.revele');
