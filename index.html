@@ -79,10 +79,10 @@
    Chaque palette a été contrôlée : tous les textes restent au-dessus de 4,5 de contraste. */
 [data-palette="origine"] { --amethyste: #4A148C; --orchidee: #A842C4; --corail: #FF7043; --peche: #FFCC80; }
 [data-palette="foret"]   { --amethyste: #12423A; --orchidee: #3A7860; --corail: #F28B4B; --peche: #E6DFC4; }
-[data-palette="encre"]   { --amethyste: #1E2B2E; --orchidee: #6B6557; --corail: #FF7043; --peche: #E8E0D2; }
+[data-palette="lagon"]   { --amethyste: #004851; --orchidee: #00BAB3; --corail: #FF8F1C; --peche: #ECDCC8; } /* essai du 27/11/2026 à la place de « encre » : bleu-vert profond, turquoise, orange et sable ; la cinquième couleur de la palette, un rouge (#F93822), sert aux petites marques */
 [data-palette="canard"]  { --amethyste: #0B3C49; --orchidee: #1F5F6E; --corail: #C5F04A; --peche: #D9E9E6; }
 [data-palette="violet-lime"]   { --amethyste: #4A148C; --orchidee: #1E7B5A; --corail: #C5F04A; --peche: #D6EDBC; }
-[data-palette="violet-menthe"] { --amethyste: #714B67; --orchidee: #346C64; --corail: #64D4BC; --peche: #E8E0D2; } /* violet de marque d'Odoo (--primary de odoo.com), menthe et vert sombre mesurés sur ses icônes, sable de la palette « encre » */
+[data-palette="violet-menthe"] { --amethyste: #714B67; --orchidee: #346C64; --corail: #64D4BC; --peche: #E8E0D2; } /* violet de marque d'Odoo (--primary de odoo.com), menthe et vert sombre mesurés sur ses icônes, sable de l'ancienne palette « encre » */
 /* Palettes à accent clair (lime, menthe) : l'accent sert lui-même d'accent sur fond sombre, et les petites marques
    posées sur le papier prennent une teinte plus soutenue, sinon elles disparaissent. Pour le canard, un mélange de
    l'accent et de la teinte foncée ; pour les violets, la teinte vive (un vert), car ce mélange y donnerait un kaki terne. */
@@ -91,9 +91,16 @@
 /* Le violet d'Odoo est plus clair que le nôtre : le texte doux se rapproche du texte plein, et les accents du bloc
    sombre restent dans la teinte claire (réglage par défaut), plus lisible que la menthe sur ce violet. */
 [data-palette="violet-menthe"] { --marque: var(--orchidee); --encre-douce: color-mix(in srgb, var(--amethyste) 92%, var(--papier)); }
+/* Lagon : le turquoise est trop clair pour du texte. Surtitres et numéros prennent un turquoise soutenu (mélange avec la
+   teinte foncée) et le texte doux se rapproche du texte plein. Les petites marques du papier (puces, carte) prennent le
+   rouge de la palette, plus visible que l'orange sur un fond clair ; le curseur de la bascule de langue reste orange,
+   comme le disque du logo. Dans le bloc sombre, l'accent est l'orange, à peine éclairci pour rester lisible. Les visuels
+   sont teintés d'un turquoise adouci par le sable : pur, il donnait un cyan électrique. */
+[data-palette="lagon"] { --repere: color-mix(in srgb, var(--orchidee) 40%, var(--amethyste)); --marque: #F93822; --encre-douce: color-mix(in srgb, var(--amethyste) 84%, var(--papier)); --accent-clair: color-mix(in srgb, var(--corail) 88%, var(--papier)); --fond-visuel: color-mix(in srgb, var(--orchidee) 65%, var(--peche)); }
+[data-palette="lagon"] .langue .bascule__point { background: var(--accent); }
 /* Hors palette d'origine, les quatre visuels (générés dans les violets) prennent la teinte de la palette par fusion
    en luminosité sur un fond de couleur. Ils seront à refaire dans la palette retenue. */
-html[data-palette]:not([data-palette="origine"]) .visuel { background: var(--orchidee); }
+html[data-palette]:not([data-palette="origine"]) .visuel { background: var(--fond-visuel, var(--orchidee)); }
 html[data-palette]:not([data-palette="origine"]) .visuel img { mix-blend-mode: luminosity; }
 /* Changement de palette : la nouvelle couleur s'ouvre en cercle depuis l'endroit du clic. */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
@@ -1099,9 +1106,9 @@ html.logos-ouverts { overflow: hidden; }
         <span>Forêt et argile<small>Verts profonds, proche d’Empakt</small></span>
         <span class="coche" aria-hidden="true">✓</span>
       </button>
-      <button type="button" class="pal-choix" data-palette="encre" aria-pressed="false">
+      <button type="button" class="pal-choix" data-palette="lagon" aria-pressed="false">
         <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <span>Encre et sable<small>Neutres, l’orange pour seule couleur</small></span>
+        <span>Lagon et dune<small>Bleu-vert, turquoise et orange, sur sable</small></span>
         <span class="coche" aria-hidden="true">✓</span>
       </button>
       <button type="button" class="pal-choix" data-palette="canard" aria-pressed="false">
