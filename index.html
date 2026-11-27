@@ -693,6 +693,10 @@ html.logos-ouverts { overflow: hidden; }
 .ecran .et-28 { font-size: 28px; }
 .ecran .et-46 { font-size: 46px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 </style>
+<!-- Outil de relecture de la maquette : il permet de poser des commentaires sur la page quand elle est affichée dans
+     l'outil de relecture (review.porte7.com). Sans effet quand la page est ouverte directement.
+     À retirer avant la mise en ligne définitive. -->
+<script src="https://review.porte7.com/pin.js" defer></script>
 </head>
 <body id="haut">
 
@@ -700,14 +704,14 @@ html.logos-ouverts { overflow: hidden; }
 
 <div class="langues-haut">
   <div class="wrap">
-    <a class="langue" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
+    <a class="langue" id="langue-haut" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
   </div>
 </div>
 
 <header class="entete" id="entete">
   <div class="wrap entete__in">
     <a class="logo" href="#haut" aria-label="Justdoo, retour en haut de page">
-      <span class="logo__mot" aria-hidden="true">justd<span class="bascule bascule--logo est-active"><span class="bascule__o"></span><span class="bascule__point"></span></span></span>
+      <span class="logo__mot" id="logo-entete" aria-hidden="true">justd<span class="bascule bascule--logo est-active"><span class="bascule__o"></span><span class="bascule__point"></span></span></span>
     </a>
     <nav aria-label="Navigation principale">
       <a href="#offre">L’offre</a>
@@ -716,7 +720,7 @@ html.logos-ouverts { overflow: hidden; }
       <a href="#empakt">Empakt</a>
     </nav>
     <div class="entete__fin">
-      <a class="langue" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
+      <a class="langue" id="langue-entete" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
       <a class="btn btn--petit" href="#contact">Parler de votre projet</a>
     </div>
   </div>
@@ -812,7 +816,7 @@ html.logos-ouverts { overflow: hidden; }
           <img data-jeu="vivant" src="assets/visuels/constat.webp?v=2" alt="Un papillon orange et violet tout juste sorti de sa chrysalide, accroché à une branche couverte de rosée." width="683" height="1024" loading="lazy">
           <img data-jeu="personnages" src="assets/visuels/personnages-constat.webp" alt="Un dirigeant seul le soir à son bureau, la main sur le front, à côté d’une pile de factures." width="1024" height="1536" loading="lazy">
           <!-- Écran dessiné : les outils éparpillés d'avant (tableur, boîte de réception, relevé, note collée). -->
-          <svg class="ecran" data-jeu="solution" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Un tableur, une boîte de réception avec 47 messages non lus, un relevé bancaire à rapprocher et une note « Relancer », en désordre les uns sur les autres.">
+          <svg class="ecran" id="ecran-constat" data-jeu="solution" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Un tableur, une boîte de réception avec 47 messages non lus, un relevé bancaire à rapprocher et une note « Relancer », en désordre les uns sur les autres.">
             <rect class="e-nuit" width="400" height="600"/>
             <g transform="translate(22 48) rotate(-5 146 90)" data-fond="--papier">
               <rect class="e-cadre" width="292" height="180" rx="10"/>
@@ -866,12 +870,12 @@ html.logos-ouverts { overflow: hidden; }
       </div>
 
       <ul class="grille services" role="list">
-        <li class="service revele" data-nom="Odoo">
+        <li class="service revele" id="service-odoo" data-nom="Odoo">
           <figure class="visuel">
             <img data-jeu="vivant" src="assets/visuels/odoo.webp?v=2" alt="La coupe d’un coquillage en spirale, aux loges régulières, dans des reflets violets et orangés." width="1411" height="941" loading="lazy">
             <img data-jeu="personnages" src="assets/visuels/personnages-odoo.webp" alt="Un dirigeant souriant devant son ordinateur portable, qui affiche un tableau de bord." width="1536" height="1024" loading="lazy">
             <!-- Écran dessiné : un tableau de bord (menu à cinq entrées, trois compteurs, encaissements par mois). -->
-            <svg class="ecran" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : un tableau de bord de facturation, avec un menu à cinq entrées, trois compteurs et un graphique des encaissements par mois.">
+            <svg class="ecran" id="ecran-odoo" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : un tableau de bord de facturation, avec un menu à cinq entrées, trois compteurs et un graphique des encaissements par mois.">
               <rect class="e-nuit" width="600" height="400"/>
               <g data-fond="--papier">
                 <rect class="e-cadre" x="28" y="28" width="544" height="344" rx="14"/>
@@ -904,7 +908,7 @@ html.logos-ouverts { overflow: hidden; }
           <div class="service__corps">
             <div class="service__tete">
               <span class="service__num" aria-hidden="true">01</span>
-              <button type="button" class="service__tout avec-js" role="switch" aria-checked="false" aria-label="Odoo, tout activer">
+              <button type="button" class="service__tout avec-js" id="tout-odoo" role="switch" aria-checked="false" aria-label="Odoo, tout activer">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
                 <span class="si-non">Tout activer</span><span class="si-oui">Activé</span>
               </button>
@@ -914,17 +918,17 @@ html.logos-ouverts { overflow: hidden; }
             <p class="service__texte">Ventes, achats, stocks, facturation, comptabilité&nbsp;: Odoo réunit ce que vous suivez aujourd’hui dans plusieurs outils et tableurs.</p>
             <p class="service__quand"><strong>Pour vous si</strong> vos tableurs ne suivent plus votre activité.</p>
             <ul class="options" role="list">
-              <li><label class="option">
+              <li><label class="option" id="option-odoo-audit">
                 <span><strong>Audit et cadrage</strong> <span class="option__desc">Nous analysons vos façons de travailler et dessinons l’Odoo qui vous correspond.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="odoo-audit" data-libelle="audit et cadrage">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
               </label></li>
-              <li><label class="option">
+              <li><label class="option" id="option-odoo-deploiement">
                 <span><strong>Déploiement</strong> <span class="option__desc">Configuration, reprise de vos données, mise en service par étapes.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="odoo-deploiement" data-libelle="déploiement">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
               </label></li>
-              <li><label class="option">
+              <li><label class="option" id="option-odoo-formation">
                 <span><strong>Formation et accompagnement</strong> <span class="option__desc">Vos équipes formées, puis suivies jusqu’à l’autonomie.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="odoo-formation" data-libelle="formation et accompagnement">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
@@ -934,12 +938,12 @@ html.logos-ouverts { overflow: hidden; }
           </div>
         </li>
 
-        <li class="service revele" data-nom="IA" style="--retard:.08s">
+        <li class="service revele" id="service-ia" data-nom="IA" style="--retard:.08s">
           <figure class="visuel">
             <img data-jeu="vivant" src="assets/visuels/ia.webp?v=2" alt="Les nervures d’une feuille vues de très près, en réseau violet et orangé." width="1411" height="941" loading="lazy">
             <img data-jeu="personnages" src="assets/visuels/personnages-ia.webp" alt="Une formatrice montre un écran à deux collègues assis côte à côte, tous les trois souriants." width="1536" height="1024" loading="lazy">
             <!-- Écran dessiné : une facture fournisseur dont trois champs sont lus, et le panneau de l'assistant. -->
-            <svg class="ecran" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : une facture fournisseur dont trois champs sont repérés, et un assistant qui propose de valider une relance qu’il a préparée.">
+            <svg class="ecran" id="ecran-ia" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : une facture fournisseur dont trois champs sont repérés, et un assistant qui propose de valider une relance qu’il a préparée.">
               <rect class="e-vif" width="600" height="400"/>
               <g data-fond="--papier">
                 <rect class="e-cadre" x="28" y="28" width="180" height="344" rx="8"/>
@@ -983,7 +987,7 @@ html.logos-ouverts { overflow: hidden; }
           <div class="service__corps">
             <div class="service__tete">
               <span class="service__num" aria-hidden="true">02</span>
-              <button type="button" class="service__tout avec-js" role="switch" aria-checked="false" aria-label="IA, tout activer">
+              <button type="button" class="service__tout avec-js" id="tout-ia" role="switch" aria-checked="false" aria-label="IA, tout activer">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
                 <span class="si-non">Tout activer</span><span class="si-oui">Activé</span>
               </button>
@@ -993,17 +997,17 @@ html.logos-ouverts { overflow: hidden; }
             <p class="service__texte">Un assistant généraliste apporte peu tant qu’il n’est pas relié à vos tâches réelles. Nous partons de ce que vos équipes font déjà.</p>
             <p class="service__quand"><strong>Pour vous si</strong> vos équipes testent l’IA chacune de leur côté.</p>
             <ul class="options" role="list">
-              <li><label class="option">
+              <li><label class="option" id="option-ia-usages">
                 <span><strong>Choix des usages</strong> <span class="option__desc">Nous retenons avec vous les usages qui valent la peine.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ia-usages" data-libelle="choix des usages">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
               </label></li>
-              <li><label class="option">
+              <li><label class="option" id="option-ia-formation">
                 <span><strong>Formation des équipes</strong> <span class="option__desc">Des ateliers pratiques, sur vos propres cas.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ia-formation" data-libelle="formation des équipes">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
               </label></li>
-              <li><label class="option">
+              <li><label class="option" id="option-ia-automatisation">
                 <span><strong>Automatisation</strong> <span class="option__desc">Nous automatisons ce qui se répète chaque semaine.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ia-automatisation" data-libelle="automatisation">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
@@ -1013,13 +1017,13 @@ html.logos-ouverts { overflow: hidden; }
           </div>
         </li>
 
-        <li class="service revele" data-nom="Back-office" style="--retard:.16s">
+        <li class="service revele" id="service-back-office" data-nom="Back-office" style="--retard:.16s">
           <figure class="visuel">
             <img data-jeu="vivant" src="assets/visuels/back-office.webp?v=2" alt="Une abeille en vol, chargée de pollen, s’approche d’une fleur violette au cœur orangé." width="1536" height="1024" loading="lazy">
             <img data-jeu="personnages" src="assets/visuels/personnages-back-office.webp" alt="Une équipe de trois personnes au travail, casque sur les oreilles. Deux d’entre elles échangent en souriant." width="1536" height="1024" loading="lazy">
             <!-- Écran dessiné : le journal de ce qui a été fait pour le client, et ce qui attend sa validation.
                  Une ligne faite porte l'interrupteur allumé, comme dans le journal du héros. -->
-            <svg class="ecran" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : la liste de ce que l’équipe Justdoo, au Portugal, a fait pour vous aujourd’hui, et des paiements fournisseurs qui attendent votre validation.">
+            <svg class="ecran" id="ecran-back-office" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : la liste de ce que l’équipe Justdoo, au Portugal, a fait pour vous aujourd’hui, et des paiements fournisseurs qui attendent votre validation.">
               <rect class="e-accent" width="600" height="400"/>
               <g data-fond="--papier">
                 <rect class="e-papier" x="28" y="28" width="544" height="344" rx="14"/>
@@ -1054,7 +1058,7 @@ html.logos-ouverts { overflow: hidden; }
           <div class="service__corps">
             <div class="service__tete">
               <span class="service__num" aria-hidden="true">03</span>
-              <button type="button" class="service__tout avec-js" role="switch" aria-checked="false" aria-label="Back-office, tout activer">
+              <button type="button" class="service__tout avec-js" id="tout-back-office" role="switch" aria-checked="false" aria-label="Back-office, tout activer">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
                 <span class="si-non">Tout activer</span><span class="si-oui">Activé</span>
               </button>
@@ -1064,17 +1068,17 @@ html.logos-ouverts { overflow: hidden; }
             <p class="service__texte">Notre centre de services au Portugal fait tourner votre administratif au quotidien, directement dans votre Odoo. Vous décidez, nous exécutons.</p>
             <p class="service__quand"><strong>Pour vous si</strong> l’administratif prend le temps de votre métier.</p>
             <ul class="options" role="list">
-              <li><label class="option">
+              <li><label class="option" id="option-ventes">
                 <span><strong>Ventes et encaissements</strong> <span class="option__desc">Devis, facturation, relances, suivi des encaissements.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="ventes" data-libelle="ventes et encaissements">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
               </label></li>
-              <li><label class="option">
+              <li><label class="option" id="option-achats">
                 <span><strong>Achats et paiements</strong> <span class="option__desc">Commandes, validations, factures, paiements préparés.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="achats" data-libelle="achats et paiements">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
               </label></li>
-              <li><label class="option">
+              <li><label class="option" id="option-tresorerie">
                 <span><strong>Trésorerie</strong> <span class="option__desc">Position bancaire, échéances, prévisions.</span></span>
                 <input class="sr bascule-entree" type="checkbox" role="switch" data-service="tresorerie" data-libelle="trésorerie">
                 <span class="bascule" aria-hidden="true"><span class="bascule__o"></span><span class="bascule__point"></span></span>
@@ -1085,7 +1089,7 @@ html.logos-ouverts { overflow: hidden; }
         </li>
       </ul>
 
-      <div class="choix revele">
+      <div class="choix revele" id="votre-formule">
         <div>
           <p class="choix__titre">Votre formule</p>
           <p class="choix__liste avec-js" id="choix-liste" aria-live="polite">Activez une ou plusieurs options pour composer votre formule.</p>
@@ -1106,7 +1110,7 @@ html.logos-ouverts { overflow: hidden; }
 
       <div class="grille portugal">
         <figure class="carte revele">
-          <div class="carte__cadre">
+          <div class="carte__cadre" id="carte-europe">
             <!--carte:debut--><svg class="carte__svg" viewBox="0 0 479 489" role="img" aria-labelledby="carte-titre carte-desc" fill="none" stroke-linecap="round" stroke-width="7.0"><title id="carte-titre">Carte de l’Europe de l’Ouest</title><desc id="carte-desc">Le Portugal, où se trouve le centre de services Justdoo, est mis en avant. Londres, siège d’Empakt, et Paris sont repérés.</desc><path class="carte__terre" d="M78.0 6.0h.01M90.0 6.0h.01M102.0 6.0h.01M114.0 6.0h.01M126.0 6.0h.01M138.0 6.0h.01M210.0 6.0h.01M222.0 6.0h.01M234.0 6.0h.01M246.0 6.0h.01M258.0 6.0h.01M270.0 6.0h.01M282.0 6.0h.01M294.0 6.0h.01M306.0 6.0h.01M318.0 6.0h.01M330.0 6.0h.01M402.0 6.0h.01M414.0 6.0h.01M426.0 6.0h.01M438.0 6.0h.01M450.0 6.0h.01M462.0 6.0h.01M474.0 6.0h.01M84.0 16.4h.01M96.0 16.4h.01M108.0 16.4h.01M120.0 16.4h.01M192.0 16.4h.01M204.0 16.4h.01M216.0 16.4h.01M228.0 16.4h.01M240.0 16.4h.01M252.0 16.4h.01M264.0 16.4h.01M276.0 16.4h.01M288.0 16.4h.01M300.0 16.4h.01M312.0 16.4h.01M324.0 16.4h.01M384.0 16.4h.01M396.0 16.4h.01M408.0 16.4h.01M420.0 16.4h.01M432.0 16.4h.01M444.0 16.4h.01M456.0 16.4h.01M468.0 16.4h.01M246.0 26.8h.01M258.0 26.8h.01M270.0 26.8h.01M282.0 26.8h.01M294.0 26.8h.01M306.0 26.8h.01M318.0 26.8h.01M378.0 26.8h.01M390.0 26.8h.01M402.0 26.8h.01M414.0 26.8h.01M426.0 26.8h.01M438.0 26.8h.01M450.0 26.8h.01M462.0 26.8h.01M474.0 26.8h.01M216.0 37.2h.01M228.0 37.2h.01M240.0 37.2h.01M252.0 37.2h.01M264.0 37.2h.01M276.0 37.2h.01M288.0 37.2h.01M300.0 37.2h.01M312.0 37.2h.01M324.0 37.2h.01M360.0 37.2h.01M372.0 37.2h.01M384.0 37.2h.01M396.0 37.2h.01M408.0 37.2h.01M420.0 37.2h.01M432.0 37.2h.01M444.0 37.2h.01M456.0 37.2h.01M468.0 37.2h.01M210.0 47.6h.01M222.0 47.6h.01M234.0 47.6h.01M246.0 47.6h.01M258.0 47.6h.01M342.0 47.6h.01M354.0 47.6h.01M366.0 47.6h.01M378.0 47.6h.01M390.0 47.6h.01M402.0 47.6h.01M414.0 47.6h.01M426.0 47.6h.01M438.0 47.6h.01M450.0 47.6h.01M462.0 47.6h.01M474.0 47.6h.01M192.0 58.0h.01M204.0 58.0h.01M216.0 58.0h.01M336.0 58.0h.01M348.0 58.0h.01M360.0 58.0h.01M372.0 58.0h.01M384.0 58.0h.01M396.0 58.0h.01M408.0 58.0h.01M420.0 58.0h.01M432.0 58.0h.01M444.0 58.0h.01M456.0 58.0h.01M468.0 58.0h.01M186.0 68.4h.01M330.0 68.4h.01M342.0 68.4h.01M354.0 68.4h.01M366.0 68.4h.01M378.0 68.4h.01M390.0 68.4h.01M402.0 68.4h.01M414.0 68.4h.01M426.0 68.4h.01M438.0 68.4h.01M450.0 68.4h.01M462.0 68.4h.01M474.0 68.4h.01M264.0 78.7h.01M312.0 78.7h.01M324.0 78.7h.01M336.0 78.7h.01M348.0 78.7h.01M360.0 78.7h.01M372.0 78.7h.01M384.0 78.7h.01M396.0 78.7h.01M408.0 78.7h.01M420.0 78.7h.01M432.0 78.7h.01M444.0 78.7h.01M456.0 78.7h.01M468.0 78.7h.01M270.0 89.1h.01M282.0 89.1h.01M306.0 89.1h.01M318.0 89.1h.01M330.0 89.1h.01M342.0 89.1h.01M354.0 89.1h.01M366.0 89.1h.01M378.0 89.1h.01M390.0 89.1h.01M402.0 89.1h.01M414.0 89.1h.01M426.0 89.1h.01M438.0 89.1h.01M450.0 89.1h.01M462.0 89.1h.01M474.0 89.1h.01M276.0 99.5h.01M288.0 99.5h.01M300.0 99.5h.01M312.0 99.5h.01M324.0 99.5h.01M336.0 99.5h.01M348.0 99.5h.01M360.0 99.5h.01M372.0 99.5h.01M384.0 99.5h.01M396.0 99.5h.01M408.0 99.5h.01M420.0 99.5h.01M432.0 99.5h.01M444.0 99.5h.01M456.0 99.5h.01M468.0 99.5h.01M210.0 109.9h.01M222.0 109.9h.01M234.0 109.9h.01M258.0 109.9h.01M270.0 109.9h.01M282.0 109.9h.01M294.0 109.9h.01M306.0 109.9h.01M318.0 109.9h.01M330.0 109.9h.01M342.0 109.9h.01M354.0 109.9h.01M366.0 109.9h.01M378.0 109.9h.01M390.0 109.9h.01M402.0 109.9h.01M414.0 109.9h.01M426.0 109.9h.01M438.0 109.9h.01M450.0 109.9h.01M462.0 109.9h.01M474.0 109.9h.01M204.0 120.3h.01M216.0 120.3h.01M228.0 120.3h.01M240.0 120.3h.01M252.0 120.3h.01M264.0 120.3h.01M276.0 120.3h.01M288.0 120.3h.01M300.0 120.3h.01M312.0 120.3h.01M324.0 120.3h.01M336.0 120.3h.01M348.0 120.3h.01M360.0 120.3h.01M372.0 120.3h.01M384.0 120.3h.01M396.0 120.3h.01M408.0 120.3h.01M420.0 120.3h.01M432.0 120.3h.01M444.0 120.3h.01M456.0 120.3h.01M468.0 120.3h.01M210.0 130.7h.01M222.0 130.7h.01M234.0 130.7h.01M246.0 130.7h.01M258.0 130.7h.01M270.0 130.7h.01M282.0 130.7h.01M294.0 130.7h.01M306.0 130.7h.01M318.0 130.7h.01M330.0 130.7h.01M342.0 130.7h.01M354.0 130.7h.01M366.0 130.7h.01M378.0 130.7h.01M390.0 130.7h.01M402.0 130.7h.01M414.0 130.7h.01M426.0 130.7h.01M438.0 130.7h.01M450.0 130.7h.01M462.0 130.7h.01M474.0 130.7h.01M240.0 141.1h.01M252.0 141.1h.01M264.0 141.1h.01M276.0 141.1h.01M288.0 141.1h.01M300.0 141.1h.01M312.0 141.1h.01M324.0 141.1h.01M336.0 141.1h.01M348.0 141.1h.01M360.0 141.1h.01M372.0 141.1h.01M384.0 141.1h.01M396.0 141.1h.01M408.0 141.1h.01M420.0 141.1h.01M432.0 141.1h.01M444.0 141.1h.01M456.0 141.1h.01M468.0 141.1h.01M258.0 151.5h.01M270.0 151.5h.01M282.0 151.5h.01M294.0 151.5h.01M306.0 151.5h.01M318.0 151.5h.01M330.0 151.5h.01M342.0 151.5h.01M354.0 151.5h.01M366.0 151.5h.01M378.0 151.5h.01M390.0 151.5h.01M402.0 151.5h.01M414.0 151.5h.01M426.0 151.5h.01M438.0 151.5h.01M450.0 151.5h.01M462.0 151.5h.01M474.0 151.5h.01M264.0 161.9h.01M276.0 161.9h.01M288.0 161.9h.01M300.0 161.9h.01M312.0 161.9h.01M324.0 161.9h.01M336.0 161.9h.01M348.0 161.9h.01M360.0 161.9h.01M372.0 161.9h.01M384.0 161.9h.01M396.0 161.9h.01M408.0 161.9h.01M420.0 161.9h.01M432.0 161.9h.01M444.0 161.9h.01M456.0 161.9h.01M468.0 161.9h.01M270.0 172.3h.01M282.0 172.3h.01M294.0 172.3h.01M306.0 172.3h.01M318.0 172.3h.01M330.0 172.3h.01M342.0 172.3h.01M354.0 172.3h.01M366.0 172.3h.01M378.0 172.3h.01M390.0 172.3h.01M402.0 172.3h.01M414.0 172.3h.01M426.0 172.3h.01M438.0 172.3h.01M450.0 172.3h.01M462.0 172.3h.01M474.0 172.3h.01M288.0 182.7h.01M300.0 182.7h.01M312.0 182.7h.01M324.0 182.7h.01M336.0 182.7h.01M348.0 182.7h.01M360.0 182.7h.01M372.0 182.7h.01M384.0 182.7h.01M396.0 182.7h.01M408.0 182.7h.01M420.0 182.7h.01M432.0 182.7h.01M444.0 182.7h.01M456.0 182.7h.01M468.0 182.7h.01M282.0 193.1h.01M294.0 193.1h.01M306.0 193.1h.01M318.0 193.1h.01M330.0 193.1h.01M342.0 193.1h.01M354.0 193.1h.01M366.0 193.1h.01M378.0 193.1h.01M390.0 193.1h.01M402.0 193.1h.01M414.0 193.1h.01M426.0 193.1h.01M438.0 193.1h.01M450.0 193.1h.01M462.0 193.1h.01M474.0 193.1h.01M288.0 203.5h.01M300.0 203.5h.01M312.0 203.5h.01M324.0 203.5h.01M336.0 203.5h.01M348.0 203.5h.01M360.0 203.5h.01M372.0 203.5h.01M384.0 203.5h.01M396.0 203.5h.01M408.0 203.5h.01M420.0 203.5h.01M432.0 203.5h.01M444.0 203.5h.01M456.0 203.5h.01M468.0 203.5h.01M282.0 213.8h.01M294.0 213.8h.01M306.0 213.8h.01M318.0 213.8h.01M330.0 213.8h.01M342.0 213.8h.01M354.0 213.8h.01M366.0 213.8h.01M378.0 213.8h.01M390.0 213.8h.01M402.0 213.8h.01M414.0 213.8h.01M426.0 213.8h.01M438.0 213.8h.01M450.0 213.8h.01M462.0 213.8h.01M474.0 213.8h.01M276.0 224.2h.01M288.0 224.2h.01M300.0 224.2h.01M312.0 224.2h.01M324.0 224.2h.01M336.0 224.2h.01M348.0 224.2h.01M360.0 224.2h.01M372.0 224.2h.01M384.0 224.2h.01M396.0 224.2h.01M408.0 224.2h.01M420.0 224.2h.01M432.0 224.2h.01M444.0 224.2h.01M456.0 224.2h.01M468.0 224.2h.01M282.0 234.6h.01M294.0 234.6h.01M306.0 234.6h.01M318.0 234.6h.01M330.0 234.6h.01M342.0 234.6h.01M354.0 234.6h.01M366.0 234.6h.01M378.0 234.6h.01M390.0 234.6h.01M402.0 234.6h.01M414.0 234.6h.01M426.0 234.6h.01M438.0 234.6h.01M450.0 234.6h.01M462.0 234.6h.01M474.0 234.6h.01M276.0 245.0h.01M288.0 245.0h.01M300.0 245.0h.01M312.0 245.0h.01M324.0 245.0h.01M336.0 245.0h.01M348.0 245.0h.01M360.0 245.0h.01M372.0 245.0h.01M384.0 245.0h.01M396.0 245.0h.01M408.0 245.0h.01M420.0 245.0h.01M432.0 245.0h.01M444.0 245.0h.01M456.0 245.0h.01M468.0 245.0h.01M282.0 255.4h.01M294.0 255.4h.01M306.0 255.4h.01M318.0 255.4h.01M330.0 255.4h.01M342.0 255.4h.01M354.0 255.4h.01M366.0 255.4h.01M378.0 255.4h.01M390.0 255.4h.01M402.0 255.4h.01M414.0 255.4h.01M426.0 255.4h.01M438.0 255.4h.01M450.0 255.4h.01M462.0 255.4h.01M132.0 265.8h.01M144.0 265.8h.01M156.0 265.8h.01M168.0 265.8h.01M180.0 265.8h.01M276.0 265.8h.01M288.0 265.8h.01M300.0 265.8h.01M312.0 265.8h.01M324.0 265.8h.01M336.0 265.8h.01M348.0 265.8h.01M360.0 265.8h.01M372.0 265.8h.01M408.0 265.8h.01M420.0 265.8h.01M432.0 265.8h.01M444.0 265.8h.01M114.0 276.2h.01M126.0 276.2h.01M138.0 276.2h.01M150.0 276.2h.01M162.0 276.2h.01M174.0 276.2h.01M186.0 276.2h.01M198.0 276.2h.01M210.0 276.2h.01M222.0 276.2h.01M234.0 276.2h.01M246.0 276.2h.01M258.0 276.2h.01M270.0 276.2h.01M282.0 276.2h.01M294.0 276.2h.01M306.0 276.2h.01M318.0 276.2h.01M330.0 276.2h.01M342.0 276.2h.01M354.0 276.2h.01M366.0 276.2h.01M108.0 286.6h.01M120.0 286.6h.01M132.0 286.6h.01M144.0 286.6h.01M156.0 286.6h.01M168.0 286.6h.01M180.0 286.6h.01M192.0 286.6h.01M204.0 286.6h.01M216.0 286.6h.01M228.0 286.6h.01M240.0 286.6h.01M252.0 286.6h.01M264.0 286.6h.01M276.0 286.6h.01M288.0 286.6h.01M300.0 286.6h.01M312.0 286.6h.01M324.0 286.6h.01M336.0 286.6h.01M348.0 286.6h.01M360.0 286.6h.01M114.0 297.0h.01M126.0 297.0h.01M138.0 297.0h.01M150.0 297.0h.01M162.0 297.0h.01M174.0 297.0h.01M186.0 297.0h.01M198.0 297.0h.01M210.0 297.0h.01M222.0 297.0h.01M234.0 297.0h.01M246.0 297.0h.01M258.0 297.0h.01M270.0 297.0h.01M282.0 297.0h.01M294.0 297.0h.01M306.0 297.0h.01M318.0 297.0h.01M330.0 297.0h.01M342.0 297.0h.01M354.0 297.0h.01M366.0 297.0h.01M132.0 307.4h.01M144.0 307.4h.01M156.0 307.4h.01M168.0 307.4h.01M180.0 307.4h.01M192.0 307.4h.01M204.0 307.4h.01M216.0 307.4h.01M228.0 307.4h.01M240.0 307.4h.01M252.0 307.4h.01M264.0 307.4h.01M276.0 307.4h.01M288.0 307.4h.01M300.0 307.4h.01M312.0 307.4h.01M324.0 307.4h.01M336.0 307.4h.01M348.0 307.4h.01M360.0 307.4h.01M174.0 317.8h.01M186.0 317.8h.01M198.0 317.8h.01M210.0 317.8h.01M222.0 317.8h.01M234.0 317.8h.01M246.0 317.8h.01M258.0 317.8h.01M270.0 317.8h.01M282.0 317.8h.01M294.0 317.8h.01M306.0 317.8h.01M318.0 317.8h.01M330.0 317.8h.01M342.0 317.8h.01M354.0 317.8h.01M168.0 328.2h.01M180.0 328.2h.01M192.0 328.2h.01M204.0 328.2h.01M216.0 328.2h.01M228.0 328.2h.01M240.0 328.2h.01M252.0 328.2h.01M264.0 328.2h.01M276.0 328.2h.01M288.0 328.2h.01M300.0 328.2h.01M312.0 328.2h.01M324.0 328.2h.01M336.0 328.2h.01M348.0 328.2h.01M162.0 338.6h.01M174.0 338.6h.01M186.0 338.6h.01M198.0 338.6h.01M210.0 338.6h.01M222.0 338.6h.01M234.0 338.6h.01M246.0 338.6h.01M258.0 338.6h.01M270.0 338.6h.01M282.0 338.6h.01M294.0 338.6h.01M306.0 338.6h.01M318.0 338.6h.01M156.0 348.9h.01M168.0 348.9h.01M180.0 348.9h.01M192.0 348.9h.01M204.0 348.9h.01M216.0 348.9h.01M228.0 348.9h.01M240.0 348.9h.01M252.0 348.9h.01M264.0 348.9h.01M276.0 348.9h.01M288.0 348.9h.01M300.0 348.9h.01M312.0 348.9h.01M162.0 359.3h.01M174.0 359.3h.01M186.0 359.3h.01M198.0 359.3h.01M210.0 359.3h.01M222.0 359.3h.01M234.0 359.3h.01M246.0 359.3h.01M258.0 359.3h.01M270.0 359.3h.01M282.0 359.3h.01M294.0 359.3h.01M306.0 359.3h.01M156.0 369.7h.01M168.0 369.7h.01M180.0 369.7h.01M192.0 369.7h.01M204.0 369.7h.01M216.0 369.7h.01M228.0 369.7h.01M240.0 369.7h.01M252.0 369.7h.01M264.0 369.7h.01M276.0 369.7h.01M288.0 369.7h.01M300.0 369.7h.01M150.0 380.1h.01M162.0 380.1h.01M174.0 380.1h.01M186.0 380.1h.01M198.0 380.1h.01M210.0 380.1h.01M222.0 380.1h.01M234.0 380.1h.01M246.0 380.1h.01M258.0 380.1h.01M270.0 380.1h.01M282.0 380.1h.01M294.0 380.1h.01M366.0 380.1h.01M156.0 390.5h.01M168.0 390.5h.01M180.0 390.5h.01M192.0 390.5h.01M204.0 390.5h.01M216.0 390.5h.01M228.0 390.5h.01M240.0 390.5h.01M252.0 390.5h.01M264.0 390.5h.01M276.0 390.5h.01M288.0 390.5h.01M162.0 400.9h.01M174.0 400.9h.01M186.0 400.9h.01M198.0 400.9h.01M210.0 400.9h.01M222.0 400.9h.01M234.0 400.9h.01M246.0 400.9h.01M258.0 400.9h.01M270.0 400.9h.01M282.0 400.9h.01M294.0 400.9h.01M330.0 400.9h.01M156.0 411.3h.01M168.0 411.3h.01M180.0 411.3h.01M192.0 411.3h.01M204.0 411.3h.01M216.0 411.3h.01M228.0 411.3h.01M240.0 411.3h.01M252.0 411.3h.01M264.0 411.3h.01M276.0 411.3h.01M288.0 411.3h.01M300.0 411.3h.01M150.0 421.7h.01M162.0 421.7h.01M174.0 421.7h.01M186.0 421.7h.01M198.0 421.7h.01M210.0 421.7h.01M222.0 421.7h.01M234.0 421.7h.01M246.0 421.7h.01M258.0 421.7h.01M270.0 421.7h.01M282.0 421.7h.01M156.0 432.1h.01M168.0 432.1h.01M180.0 432.1h.01M192.0 432.1h.01M204.0 432.1h.01M216.0 432.1h.01M228.0 432.1h.01M240.0 432.1h.01M252.0 432.1h.01M264.0 432.1h.01M276.0 432.1h.01M150.0 442.5h.01M162.0 442.5h.01M174.0 442.5h.01M186.0 442.5h.01M198.0 442.5h.01M210.0 442.5h.01M222.0 442.5h.01M234.0 442.5h.01M246.0 442.5h.01M258.0 442.5h.01M270.0 442.5h.01M144.0 452.9h.01M156.0 452.9h.01M168.0 452.9h.01M180.0 452.9h.01M192.0 452.9h.01M204.0 452.9h.01M216.0 452.9h.01M228.0 452.9h.01M240.0 452.9h.01M252.0 452.9h.01M174.0 463.3h.01M186.0 463.3h.01M198.0 463.3h.01M210.0 463.3h.01M222.0 463.3h.01M234.0 463.3h.01M246.0 463.3h.01M258.0 463.3h.01M168.0 473.7h.01M180.0 473.7h.01M192.0 473.7h.01M174.0 484.0h.01M186.0 484.0h.01"/><path class="carte__pt" d="M120.0 307.4h.01M114.0 317.8h.01M126.0 317.8h.01M138.0 317.8h.01M150.0 317.8h.01M162.0 317.8h.01M120.0 328.2h.01M132.0 328.2h.01M144.0 328.2h.01M156.0 328.2h.01M126.0 338.6h.01M138.0 338.6h.01M150.0 338.6h.01M120.0 348.9h.01M132.0 348.9h.01M144.0 348.9h.01M114.0 359.3h.01M126.0 359.3h.01M138.0 359.3h.01M150.0 359.3h.01M120.0 369.7h.01M132.0 369.7h.01M144.0 369.7h.01M114.0 380.1h.01M126.0 380.1h.01M138.0 380.1h.01M108.0 390.5h.01M120.0 390.5h.01M132.0 390.5h.01M144.0 390.5h.01M102.0 400.9h.01M114.0 400.9h.01M126.0 400.9h.01M138.0 400.9h.01M150.0 400.9h.01M108.0 411.3h.01M120.0 411.3h.01M132.0 411.3h.01M144.0 411.3h.01M114.0 421.7h.01M126.0 421.7h.01M138.0 421.7h.01M120.0 432.1h.01M132.0 432.1h.01M144.0 432.1h.01M114.0 442.5h.01M126.0 442.5h.01M138.0 442.5h.01M120.0 452.9h.01M132.0 452.9h.01"/><g class="carte__reperes" stroke-width="1.6"><circle cx="299.5" cy="23.7" r="6.5"/><circle cx="352.8" cy="103.2" r="6.5"/></g></svg><!--carte:fin-->
             <span class="carte__nom carte__nom--pt" aria-hidden="true">Portugal</span>
             <span class="carte__nom carte__nom--londres" aria-hidden="true">Londres</span>
@@ -1182,7 +1186,7 @@ html.logos-ouverts { overflow: hidden; }
   <section class="sec empakt" id="empakt" aria-labelledby="titre-empakt">
     <div class="wrap">
       <div class="grille empakt__haut">
-        <div class="empakt__intro revele">
+        <div class="empakt__intro revele" id="empakt-intro">
           <p class="surtitre">D’où nous venons</p>
           <h2 id="titre-empakt">Derrière Justdoo, il y a Empakt.</h2>
           <p class="chapo">Empakt est un cabinet de conseil en transformation fondé en 2019 et basé à Londres. Ses équipes conduisent des programmes complexes pour des organisations comme Vodafone, Ricoh ou Vantage Towers. Justdoo met cette exigence, et les valeurs qui vont avec, à la portée des PME.</p>
@@ -1193,7 +1197,7 @@ html.logos-ouverts { overflow: hidden; }
         </figure>
       </div>
 
-      <ol class="grille valeurs" role="list">
+      <ol class="grille valeurs" id="valeurs" role="list">
         <li class="valeur revele">
           <span class="valeur__num" aria-hidden="true">01</span>
           <h3>Empathie</h3>
@@ -1267,12 +1271,12 @@ html.logos-ouverts { overflow: hidden; }
 <footer class="pied">
   <div class="wrap">
     <div class="grille pied__haut">
-      <div class="pied__marque">
+      <div class="pied__marque" id="pied-marque">
         <a class="logo" href="#haut" aria-label="Justdoo, retour en haut de page">
-          <span class="logo__mot" aria-hidden="true">justd<span class="bascule bascule--logo est-active"><span class="bascule__o"></span><span class="bascule__point"></span></span></span>
+          <span class="logo__mot" id="logo-pied" aria-hidden="true">justd<span class="bascule bascule--logo est-active"><span class="bascule__o"></span><span class="bascule__point"></span></span></span>
         </a>
         <p>Odoo, IA et back-office externalisé pour les PME.</p>
-        <a class="langue" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
+        <a class="langue" id="langue-pied" href="uk/index.html" hreflang="en-GB"><span class="langue__code langue__code--uk" aria-hidden="true">UK</span><span class="bascule" aria-hidden="true"><span class="bascule__point"></span></span><span class="langue__code langue__code--fr" aria-hidden="true">FR</span><span class="sr" lang="en-GB">English version (UK)</span></a>
       </div>
       <nav aria-label="Navigation de pied de page">
         <a href="#offre">L’offre</a>
@@ -1303,20 +1307,20 @@ html.logos-ouverts { overflow: hidden; }
     </div>
     <div class="logos__jeu" role="group" aria-labelledby="logos-titre">
       <button type="button" class="logo-choix" data-choix="actuel" aria-pressed="true">
-        <span class="logo-choix__clair"><span class="lgo" data-logo="actuel" aria-hidden="true"></span></span>
-        <span class="logo-choix__sombre sur-sombre"><span class="lgo" data-logo="actuel" aria-hidden="true"></span></span>
+        <span class="logo-choix__clair"><span class="lgo" id="piste-actuel-clair" data-logo="actuel" aria-hidden="true"></span></span>
+        <span class="logo-choix__sombre sur-sombre"><span class="lgo" id="piste-actuel-sombre" data-logo="actuel" aria-hidden="true"></span></span>
         <span class="logo-choix__texte"><strong>L’interrupteur</strong><span>Le logo actuel : les deux «&nbsp;o&nbsp;» logés dans un interrupteur allumé.</span></span>
         <span class="logo-choix__etat"><span class="logo-choix__oui">Affiché sur le site</span><span class="logo-choix__non">Essayer sur le site</span></span>
       </button>
       <button type="button" class="logo-choix" data-choix="cercles" aria-pressed="false">
-        <span class="logo-choix__clair"><span class="lgo" data-logo="cercles" aria-hidden="true"></span></span>
-        <span class="logo-choix__sombre sur-sombre"><span class="lgo" data-logo="cercles" aria-hidden="true"></span></span>
+        <span class="logo-choix__clair"><span class="lgo" id="piste-cercles-clair" data-logo="cercles" aria-hidden="true"></span></span>
+        <span class="logo-choix__sombre sur-sombre"><span class="lgo" id="piste-cercles-sombre" data-logo="cercles" aria-hidden="true"></span></span>
         <span class="logo-choix__texte"><strong>Trois cercles</strong><span>Le «&nbsp;d&nbsp;» et les deux «&nbsp;o&nbsp;» sont trois cercles identiques, au trait de plus en plus fin. Le dernier prend la couleur d’accent.</span></span>
         <span class="logo-choix__etat"><span class="logo-choix__oui">Affiché sur le site</span><span class="logo-choix__non">Essayer sur le site</span></span>
       </button>
       <button type="button" class="logo-choix" data-choix="ruban" aria-pressed="false">
-        <span class="logo-choix__clair"><span class="lgo" data-logo="ruban" aria-hidden="true"></span></span>
-        <span class="logo-choix__sombre sur-sombre"><span class="lgo" data-logo="ruban" aria-hidden="true"></span></span>
+        <span class="logo-choix__clair"><span class="lgo" id="piste-ruban-clair" data-logo="ruban" aria-hidden="true"></span></span>
+        <span class="logo-choix__sombre sur-sombre"><span class="lgo" id="piste-ruban-sombre" data-logo="ruban" aria-hidden="true"></span></span>
         <span class="logo-choix__texte"><strong>L’infini</strong><span>Les deux «&nbsp;o&nbsp;» deviennent un ruban continu, qui passe sur lui-même. La couleur suit le ruban.</span></span>
         <span class="logo-choix__etat"><span class="logo-choix__oui">Affiché sur le site</span><span class="logo-choix__non">Essayer sur le site</span></span>
       </button>
@@ -1340,30 +1344,30 @@ html.logos-ouverts { overflow: hidden; }
     <div class="couleurs__groupe couleurs__groupe--logo" id="outil-logo" role="group" aria-labelledby="outil-logo-nom">
       <p class="couleurs__nom" id="outil-logo-nom">Logo</p>
       <div class="lgo-jeu">
-        <button type="button" class="lgo-choix" data-choix-logo="actuel" aria-pressed="true"><span class="lgo" data-logo="actuel" aria-hidden="true"></span><span>L’interrupteur</span></button>
-        <button type="button" class="lgo-choix" data-choix-logo="cercles" aria-pressed="false"><span class="lgo" data-logo="cercles" aria-hidden="true"></span><span>Trois cercles</span></button>
-        <button type="button" class="lgo-choix" data-choix-logo="ruban" aria-pressed="false"><span class="lgo" data-logo="ruban" aria-hidden="true"></span><span>L’infini</span></button>
+        <button type="button" class="lgo-choix" data-choix-logo="actuel" aria-pressed="true"><span class="lgo" id="vignette-actuel" data-logo="actuel" aria-hidden="true"></span><span>L’interrupteur</span></button>
+        <button type="button" class="lgo-choix" data-choix-logo="cercles" aria-pressed="false"><span class="lgo" id="vignette-cercles" data-logo="cercles" aria-hidden="true"></span><span>Trois cercles</span></button>
+        <button type="button" class="lgo-choix" data-choix-logo="ruban" aria-pressed="false"><span class="lgo" id="vignette-ruban" data-logo="ruban" aria-hidden="true"></span><span>L’infini</span></button>
       </div>
     </div>
-    <div class="couleurs__groupe couleurs__groupe--images" role="group" aria-labelledby="outil-images-nom">
+    <div class="couleurs__groupe couleurs__groupe--images" id="outil-images" role="group" aria-labelledby="outil-images-nom">
       <p class="couleurs__nom" id="outil-images-nom">Images</p>
-      <button type="button" class="img-choix" data-choix-images="vivant" aria-pressed="true">
+      <button type="button" class="img-choix" id="choix-images-vivant" data-choix-images="vivant" aria-pressed="true">
         <span class="img-choix__picto" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 19c0-8.5 5-13.5 14-14 0 9-5 14-13 14M5 19c3-5 6-8 9.5-10"/></svg></span>
         <span>Le vivant<small>Coquillage, feuille, abeille, papillon</small></span>
         <span class="coche" aria-hidden="true">✓</span>
       </button>
-      <button type="button" class="img-choix" data-choix-images="solution" aria-pressed="false">
+      <button type="button" class="img-choix" id="choix-images-solution" data-choix-images="solution" aria-pressed="false">
         <span class="img-choix__picto" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M8 15.5v-3M12 15.5v-7M16 15.5V11"/></svg></span>
         <span>La solution<small>Des écrans dessinés, aux couleurs de la page</small></span>
         <span class="coche" aria-hidden="true">✓</span>
       </button>
-      <button type="button" class="img-choix" data-choix-images="personnages" aria-pressed="false">
+      <button type="button" class="img-choix" id="choix-images-personnages" data-choix-images="personnages" aria-pressed="false">
         <span class="img-choix__picto" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c.8-4 3.4-6 7-6s6.2 2 7 6"/></svg></span>
         <span>Les personnages<small>Les images du 21 novembre</small></span>
         <span class="coche" aria-hidden="true">✓</span>
       </button>
     </div>
-    <div class="couleurs__groupe couleurs__groupe--palettes" role="group" aria-labelledby="outil-couleurs-nom">
+    <div class="couleurs__groupe couleurs__groupe--palettes" id="outil-couleurs" role="group" aria-labelledby="outil-couleurs-nom">
       <p class="couleurs__nom" id="outil-couleurs-nom">Couleurs</p>
       <button type="button" class="pal-choix" data-palette="origine" aria-pressed="true">
         <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
@@ -1483,7 +1487,7 @@ html.logos-ouverts { overflow: hidden; }
       choixLogos.forEach(function (b) {
         var nom = b.getAttribute('data-choix-logo');
         var dessin = b.querySelector('.lgo');
-        if (dessin) dessin.innerHTML = logos.balisage(nom);
+        if (dessin) logos.poser(dessin, nom);
         b.addEventListener('click', function () { logos.choisir(nom); });
       });
       document.addEventListener('justdoo:logo', function (evt) { marquerLogo(evt.detail); });

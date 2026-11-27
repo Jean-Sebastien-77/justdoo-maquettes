@@ -126,9 +126,13 @@
 
   function balisage(nom) { return nom === 'cercles' ? cercles() : nom === 'ruban' ? ruban() : origine; }
 
+  /* Si l'emplacement porte un identifiant, son dessin en reçoit un aussi (« logo-entete-dessin ») : l'outil de
+     relecture s'en sert pour raccrocher une épingle au bon logo, la page en montrant plusieurs fois le même dessin. */
   function poser(element, nom) {
     element.setAttribute('data-logo', nom);
     element.innerHTML = balisage(nom);
+    var trace = element.id ? element.querySelector('svg') : null;
+    if (trace) trace.id = element.id + '-dessin';
   }
 
   /* Le mot des trois cercles est en Outfit : la police n'est chargée que s'il le faut, réduite aux quatre lettres utiles. */
@@ -219,6 +223,7 @@
   appliquer(choisi());
   if (page) suivreAdresse();
 
-  /* preparer : charge à l'avance la police du logo « Trois cercles » (vignette du panneau, page des logos). */
-  window.JustdooLogos = { choisir: choisir, choisi: choisi, balisage: balisage, preparer: function () { police('cercles'); } };
+  /* poser : dessine un logo dans un emplacement (vignettes du panneau).
+     preparer : charge à l'avance la police du logo « Trois cercles » (vignette du panneau, page des logos). */
+  window.JustdooLogos = { choisir: choisir, choisi: choisi, balisage: balisage, poser: poser, preparer: function () { police('cercles'); } };
 })();
