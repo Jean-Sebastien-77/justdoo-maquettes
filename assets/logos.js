@@ -7,6 +7,10 @@
    Choix retenu par le navigateur (clé « justdoo-logo »), commun aux deux langues. Adresse : ?logo=cercles ou ?logo=ruban.
    Page des logos : #logos.
 
+   Le logo se choisit aussi dans le panneau « Logo, images, couleurs » de la page, qui passe par JustdooLogos.choisir.
+   À chaque changement, ce fichier émet l'événement « justdoo:logo » sur le document (detail = nom du logo), pour que
+   le panneau et la page des logos restent d'accord.
+
    Les tracés viennent des planches du dossier logos/ (dessins.js), avec des mesures figées ici, en millièmes de cadratin :
    - trois cercles : mot en Outfit 600 ; cercles de 504 de diamètre, centrés à 241,5 au-dessus de la ligne de base ;
      fût de 132 sur 723 ; cercle du « d » à 86 % du fût, cercles suivants à 54 % et 25 % du premier ; le dernier est en accent ;
@@ -149,6 +153,7 @@
     racine.setAttribute('data-logo', nom);
     var boutons = document.querySelectorAll('.logo-choix');
     for (var j = 0; j < boutons.length; j++) boutons[j].setAttribute('aria-pressed', String(boutons[j].getAttribute('data-choix') === nom));
+    try { document.dispatchEvent(new CustomEvent('justdoo:logo', { detail: nom })); } catch (e) { /* le panneau ne suivra pas, sans gravité */ }
   }
 
   function choisir(nom) {
@@ -157,7 +162,7 @@
     appliquer(nom);
   }
 
-  /* ---------- La page « Pistes de logo » : ouverte par #logos, elle laisse l'en-tête et l'outil des couleurs en service ---------- */
+  /* ---------- La page « Pistes de logo » : ouverte par #logos, elle laisse l'en-tête et le panneau « Logo, images, couleurs » en service ---------- */
 
   var page = document.getElementById('logos');
   var entete = document.getElementById('entete');
@@ -214,5 +219,6 @@
   appliquer(choisi());
   if (page) suivreAdresse();
 
-  window.JustdooLogos = { choisir: choisir, choisi: choisi, balisage: balisage };
+  /* preparer : charge à l'avance la police du logo « Trois cercles » (vignette du panneau, page des logos). */
+  window.JustdooLogos = { choisir: choisir, choisi: choisi, balisage: balisage, preparer: function () { police('cercles'); } };
 })();

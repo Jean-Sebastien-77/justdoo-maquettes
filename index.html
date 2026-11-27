@@ -18,18 +18,28 @@
 <script>
   /* Avant le premier rendu : signale que JavaScript est actif (apparitions au défilement). */
   document.documentElement.classList.add('js');
-  /* Outil de maquette : la palette retenue (ou demandée par ?palette=nom) est posée avant le premier rendu. */
-  try {
-    var paletteVoulue = (/[?&]palette=([a-z-]+)/.exec(window.location.search) || [])[1] || window.localStorage.getItem('justdoo-palette');
-    if (paletteVoulue) document.documentElement.setAttribute('data-palette', paletteVoulue);
-    /* Outil de maquette : même principe pour le logo retenu (ou demandé par ?logo=nom), dessiné par assets/logos.js.
-       Si ce fichier ne se charge pas, le logo d'origine revient au bout de trois secondes. */
-    var logoVoulu = (/[?&]logo=([a-z]+)/.exec(window.location.search) || [])[1] || window.localStorage.getItem('justdoo-logo');
-    if (logoVoulu) {
-      document.documentElement.setAttribute('data-logo', logoVoulu);
-      window.setTimeout(function () { if (!document.querySelector('.logo__mot[data-logo]')) document.documentElement.removeAttribute('data-logo'); }, 3000);
+  /* Outil de maquette : la palette, le logo et le jeu d'images sont posés avant le premier rendu. Chacun vient de
+     l'adresse (?palette=nom, ?logo=nom, ?images=nom) ou, à défaut, du choix retenu par le navigateur. Si celui-ci
+     refuse l'accès à sa mémoire, l'adresse reste lue et la page s'affiche avec ses réglages d'origine. */
+  (function () {
+    var racine = document.documentElement;
+    function voulu(nom, cle) {
+      var demande = (new RegExp('[?&]' + nom + '=([a-z-]+)').exec(window.location.search) || [])[1];
+      if (demande) return demande;
+      try { return window.localStorage.getItem(cle); } catch (e) { return null; }
     }
-  } catch (e) { /* stockage indisponible : la palette d'origine s'affiche */ }
+    var palette = voulu('palette', 'justdoo-palette');
+    if (palette) racine.setAttribute('data-palette', palette);
+    /* Le logo est dessiné par assets/logos.js. Si ce fichier ne se charge pas, le logo d'origine revient au bout de trois secondes. */
+    var logo = voulu('logo', 'justdoo-logo');
+    if (logo) {
+      racine.setAttribute('data-logo', logo);
+      window.setTimeout(function () { if (!document.querySelector('.logo__mot[data-logo]')) racine.removeAttribute('data-logo'); }, 3000);
+    }
+    /* Sans attribut, ou avec un nom inconnu, la page montre le jeu d'images « vivant » (repli fait en CSS). */
+    var images = voulu('images', 'justdoo-images');
+    if (images) racine.setAttribute('data-images', images);
+  })();
 </script>
 <style>
 /* ==========================================================================
@@ -73,7 +83,7 @@
 .sec--bloc { --encre-douce: var(--encre); --repere: var(--encre); }
 
 /* Palettes de la maquette (exercice du 26/11/2026). Le choix se fait dans le panneau
-   « Couleurs maquette » (section 8). Une palette redéfinit quatre teintes, tout le reste en découle.
+   « Logo, images, couleurs » (section 8). Une palette redéfinit quatre teintes, tout le reste en découle.
    Les noms des variables datent de la palette d'origine : --amethyste = teinte foncée (textes, boutons, bloc Empakt),
    --orchidee = teinte vive (surtitres, carte), --corail = accent (interrupteur, disque), --peche = teinte claire.
    Chaque palette a été contrôlée : tous les textes restent au-dessus de 4,5 de contraste. */
@@ -98,8 +108,9 @@
    sont teintés d'un turquoise adouci par le sable : pur, il donnait un cyan électrique. */
 [data-palette="lagon"] { --repere: color-mix(in srgb, var(--orchidee) 40%, var(--amethyste)); --marque: #F93822; --encre-douce: color-mix(in srgb, var(--amethyste) 84%, var(--papier)); --accent-clair: color-mix(in srgb, var(--corail) 88%, var(--papier)); --fond-visuel: color-mix(in srgb, var(--orchidee) 65%, var(--peche)); }
 [data-palette="lagon"] .langue .bascule__point { background: var(--accent); }
-/* Hors palette d'origine, les quatre visuels (générés dans les violets) prennent la teinte de la palette par fusion
-   en luminosité sur un fond de couleur. Ils seront à refaire dans la palette retenue. */
+/* Hors palette d'origine, les images des jeux « vivant » et « personnages » (toutes dans les violets) prennent la teinte
+   de la palette par fusion en luminosité sur un fond de couleur. Elles seront à refaire dans la palette retenue.
+   Les écrans dessinés du jeu « solution » ne sont pas concernés : ils sont faits des couleurs de la page. */
 html[data-palette]:not([data-palette="origine"]) .visuel { background: var(--fond-visuel, var(--orchidee)); }
 html[data-palette]:not([data-palette="origine"]) .visuel img { mix-blend-mode: luminosity; }
 /* Changement de palette : la nouvelle couleur s'ouvre en cercle depuis l'endroit du clic. */
@@ -216,6 +227,14 @@ html:not(.js) .avec-js { display: none; }
 .visuel img { width: 100%; height: 100%; object-fit: cover; }
 .visuel--portrait { aspect-ratio: 2 / 3; border-radius: 8px; }
 .visuel[data-provisoire]::after { content: "Visuel provisoire"; position: absolute; left: .625rem; bottom: .625rem; padding: .2rem .55rem; border-radius: 999px; background: var(--papier); color: var(--encre); font-size: .6875rem; font-weight: 600; line-height: 1.3; }
+/* Outil de maquette : chaque emplacement porte trois jeux d'images (attribut data-jeu). L'attribut data-images de
+   <html> choisit celui qui est montré : « vivant » (photos de nature), « solution » (écrans dessinés, section 10) ou
+   « personnages » (images du 21/11). Sans attribut, ou avec un nom inconnu, c'est « vivant » : ce repli ne dépend
+   d'aucun script. Les images non montrées ne sont pas téléchargées (chargement différé). */
+.visuel > [data-jeu] { display: none; }
+.visuel > [data-jeu="vivant"] { display: block; }
+html[data-images="solution"] .visuel > [data-jeu="vivant"], html[data-images="personnages"] .visuel > [data-jeu="vivant"] { display: none; }
+html[data-images="solution"] .visuel > [data-jeu="solution"], html[data-images="personnages"] .visuel > [data-jeu="personnages"] { display: block; }
 
 /* Apparition au défilement (désactivée sans JavaScript ou si mouvement réduit). */
 .js .revele { opacity: 0; transform: translateY(18px); }
@@ -524,28 +543,56 @@ html[lang="fr"] .langue .bascule__point { transform: translateX(calc(var(--d) + 
 }
 
 /* ==========================================================================
-   8. OUTIL DE MAQUETTE : COULEURS
-   Panneau flottant pour comparer les palettes. Il n'appartient pas au site : ses couleurs sont neutres et fixes.
+   8. OUTIL DE MAQUETTE : LOGO, IMAGES, COULEURS
+   Panneau flottant à trois groupes : le logo (3 pistes), le jeu d'images (3) et la palette (6).
+   Il n'appartient pas au site : ses couleurs sont neutres et fixes.
    À retirer, avec son balisage et son script, avant la mise en ligne définitive.
    ========================================================================== */
 .couleurs { position: fixed; left: 16px; bottom: 16px; z-index: 60; font-family: var(--f-texte); color: #1d1b1a; }
 .couleurs button { font-family: inherit; color: inherit; cursor: pointer; }
 .couleurs :focus-visible { outline-color: #1d1b1a; }
 .couleurs__bouton { display: inline-flex; align-items: center; gap: .6rem; min-height: 2.75rem; padding: .45rem .95rem .45rem .6rem; border: 0; border-radius: 999px; background: #fff; font-size: .8125rem; font-weight: 700; box-shadow: 0 6px 24px rgb(0 0 0 / .16), 0 0 0 1px rgb(0 0 0 / .08); }
-.couleurs__carte { position: absolute; left: 0; bottom: calc(100% + 10px); width: min(19.5rem, calc(100vw - 32px)); padding: 1rem .65rem .65rem; border-radius: 18px; background: #fff; box-shadow: 0 18px 50px rgb(0 0 0 / .22), 0 0 0 1px rgb(0 0 0 / .08); }
+/* La carte ne dépasse jamais l'écran : au besoin, son contenu défile à l'intérieur. */
+.couleurs__carte { position: absolute; left: 0; bottom: calc(100% + 10px); width: min(19.5rem, calc(100vw - 32px)); max-height: calc(100vh - 5.5rem); max-height: calc(100dvh - 5.5rem); overflow-y: auto; overscroll-behavior: contain; padding: 1rem .65rem .65rem; border-radius: 18px; background: #fff; box-shadow: 0 18px 50px rgb(0 0 0 / .22), 0 0 0 1px rgb(0 0 0 / .08); }
+.couleurs__carte[hidden] { display: none; }
 .couleurs__titre { margin: 0 .5rem .2rem; font-size: .6875rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .couleurs__aide { margin: 0 .5rem .6rem; font-size: .8125rem; line-height: 1.4; color: #5e5a57; }
-.pal-choix { display: flex; align-items: center; gap: .75rem; width: 100%; padding: .55rem .5rem; border: 0; border-radius: 12px; background: transparent; font-size: .9375rem; font-weight: 700; line-height: 1.25; text-align: left; transition: background-color .2s ease; }
-.pal-choix:hover, .pal-choix:focus-visible { background: #f3f1ee; }
-.pal-choix small { display: block; margin-top: .1rem; font-size: .75rem; font-weight: 500; color: #5e5a57; }
+.couleurs__tete { border-bottom: 1px solid #e9e6e1; }
+.couleurs__groupe { padding-top: .6rem; }
+.couleurs__groupe + .couleurs__groupe { margin-top: .55rem; border-top: 1px solid #e9e6e1; }
+.couleurs__groupe[hidden] { display: none; }
+.couleurs__groupe[hidden] + .couleurs__groupe { margin-top: 0; border-top: 0; }
+.couleurs__nom { margin: 0 .5rem .35rem; font-size: .8125rem; font-weight: 700; line-height: 1.3; }
+/* Logo : trois vignettes, chacune montre le logo dessiné dans la palette en cours. */
+.lgo-jeu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; padding: 0 .3rem .15rem; }
+.lgo-choix { display: grid; justify-items: center; align-content: center; gap: .45rem; min-width: 0; min-height: 4.75rem; padding: .8rem .15rem .55rem; border: 0; border-radius: 12px; background: #f6f4f1; box-shadow: inset 0 0 0 1px #e9e6e1; font-size: .6875rem; font-weight: 600; line-height: 1.2; text-align: center; transition: background-color .2s ease, box-shadow .2s ease; }
+.lgo-choix:hover, .lgo-choix:focus-visible { background: #efece8; }
+.lgo-choix[aria-pressed="true"] { background: #fff; box-shadow: inset 0 0 0 2px #1d1b1a; }
+.lgo-choix .lgo { font-size: 1.0625rem; }
+/* Images et couleurs : une ligne par choix, avec une coche sur celui qui est affiché. */
+.pal-choix, .img-choix { display: flex; align-items: center; gap: .75rem; width: 100%; padding: .55rem .5rem; border: 0; border-radius: 12px; background: transparent; font-size: .9375rem; font-weight: 700; line-height: 1.25; text-align: left; transition: background-color .2s ease; }
+.pal-choix:hover, .pal-choix:focus-visible, .img-choix:hover, .img-choix:focus-visible { background: #f3f1ee; }
+.pal-choix small, .img-choix small { display: block; margin-top: .1rem; font-size: .75rem; font-weight: 500; color: #5e5a57; }
+.img-choix__picto { display: grid; place-items: center; flex: none; width: 2.125rem; height: 2.125rem; border-radius: 9px; background: #f3f1ee; transition: background-color .2s ease; }
+.img-choix:hover .img-choix__picto, .img-choix:focus-visible .img-choix__picto { background: #e9e6e1; }
+.img-choix__picto svg { width: 1.375rem; height: 1.375rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .pastilles { display: flex; flex: none; }
 .pastilles i { width: 1.375rem; height: 1.375rem; margin-left: -.45rem; border-radius: 50%; box-shadow: 0 0 0 2px #fff; }
 .pastilles i:first-child { margin-left: 0; background: var(--amethyste); }
 .pastilles i:nth-child(2) { background: var(--orchidee); }
 .pastilles i:nth-child(3) { background: var(--corail); }
 .pastilles i:nth-child(4) { background: var(--peche); }
-.pal-choix .coche { display: grid; place-items: center; flex: none; width: 1.25rem; height: 1.25rem; margin-left: auto; border-radius: 50%; background: #1d1b1a; color: #fff; font-size: .7rem; opacity: 0; transform: scale(.6); transition: opacity .2s ease, transform .3s var(--doux); }
-.pal-choix[aria-pressed="true"] .coche { opacity: 1; transform: none; }
+.couleurs .coche { display: grid; place-items: center; flex: none; width: 1.25rem; height: 1.25rem; margin-left: auto; border-radius: 50%; background: #1d1b1a; color: #fff; font-size: .7rem; opacity: 0; transform: scale(.6); transition: opacity .2s ease, transform .3s var(--doux); }
+.couleurs [aria-pressed="true"] .coche { opacity: 1; transform: none; }
+/* Sur un écran large, deux colonnes : logo et images à gauche, couleurs à droite. La carte est plus large mais moins
+   haute, elle laisse voir le haut de la page pendant qu'on essaie. */
+@media (min-width: 760px) {
+  .couleurs__carte:not([hidden]) { display: grid; grid-template-columns: 17rem 20.5rem; grid-template-rows: auto auto 1fr; column-gap: .65rem; width: auto; }
+  .couleurs__tete { grid-column: 1 / -1; }
+  .couleurs__groupe--logo { grid-column: 1; grid-row: 2; }
+  .couleurs__groupe--images { grid-column: 1; grid-row: 3; }
+  .couleurs__carte .couleurs__groupe--palettes { grid-column: 2; grid-row: 2 / span 2; margin-top: 0; padding-left: .65rem; border-top: 0; border-left: 1px solid #e9e6e1; }
+}
 
 /* ==========================================================================
    9. OUTIL DE MAQUETTE : PISTES DE LOGO
@@ -569,7 +616,7 @@ html.js .pied { padding-bottom: 5rem; }
 .outil-logos:hover { border-color: var(--encre); }
 
 /* La page des logos couvre le site sous l'en-tête, qui reste visible : le logo choisi y change aussitôt.
-   L'outil des couleurs reste par-dessus. Le haut de la page est calé sur le bas de l'en-tête par le script. */
+   Le panneau « Logo, images, couleurs » reste par-dessus. Le haut de la page est calé sur le bas de l'en-tête par le script. */
 html.logos-ouverts { overflow: hidden; }
 .logos { position: fixed; inset: 72px 0 0; z-index: 35; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--filet); background: var(--papier); }
 .logos[hidden] { display: none; }
@@ -601,6 +648,50 @@ html.logos-ouverts { overflow: hidden; }
   .logos__jeu { grid-template-columns: minmax(0, 1fr); }
   .logo-choix__clair { font-size: clamp(2.5rem, 12vw, 4.5rem); }
 }
+
+/* ==========================================================================
+   10. ÉCRANS DESSINÉS (jeu d'images « solution », 27/11/2026)
+   Quatre maquettes d'interface dessinées pour la page, en SVG : aucune capture d'un logiciel réel, aucun logo tiers.
+   Elles n'emploient que les variables de couleur et les polices de la page : elles suivent donc la palette en cours.
+   Unité = celle du dessin (600 x 400 pour les cartes, 400 x 600 pour le constat). Aucun texte sous 20 unités.
+   Chaque texte indique le fond sur lequel il est posé par l'attribut data-fond le plus proche (nom d'une variable) :
+   _build/verifier-ecrans.js s'en sert pour mesurer les contrastes dans les six palettes.
+   ========================================================================== */
+.ecran { width: 100%; height: 100%; font-family: var(--f-texte); -webkit-user-select: none; user-select: none; }
+/* Aplats */
+.e-nuit { fill: var(--amethyste); }
+.e-encre { fill: var(--encre); }
+.e-vif { fill: var(--orchidee); }
+.e-accent { fill: var(--accent); }
+.e-papier { fill: var(--papier); }
+.e-bloc { fill: var(--bloc); }
+.e-actif { fill: var(--actif); }
+.e-sur { fill: var(--sur-accent); }
+/* Filets et contours */
+.e-cadre { fill: var(--papier); stroke: var(--encre); stroke-width: 2; }
+.e-contour { fill: none; stroke: var(--encre); stroke-width: 2; }
+.e-filet { fill: none; stroke: var(--encre); stroke-opacity: .24; stroke-width: 1.5; }
+.e-trait { fill: none; stroke: var(--encre); stroke-width: 2; }
+.e-anneau { fill: none; stroke: var(--papier); }
+.e-champ { fill: var(--actif); stroke: var(--accent); stroke-width: 2; }
+.e-note { fill: var(--accent); stroke: var(--encre); stroke-width: 2; stroke-linejoin: round; }
+.e-pli { fill: var(--sur-accent); opacity: .3; }
+.e-pastille { stroke: var(--bloc); stroke-width: 3; }
+/* Lignes de texte suggérées */
+.e-barre { fill: var(--encre); opacity: .22; }
+.e-barre--forte { opacity: .78; }
+/* Textes */
+.ecran text { font-size: 20px; font-weight: 600; fill: var(--encre); }
+.ecran .et-titre { font-family: var(--f-titre); font-weight: 800; letter-spacing: -.015em; }
+.ecran .et-gras { font-weight: 700; }
+.ecran .et-moyen { font-weight: 500; }
+.ecran .et-clair { fill: var(--papier); }
+.ecran .et-sur { fill: var(--sur-accent); }
+.ecran .et-mil { text-anchor: middle; }
+.ecran .et-22 { font-size: 22px; }
+.ecran .et-24 { font-size: 24px; }
+.ecran .et-28 { font-size: 28px; }
+.ecran .et-46 { font-size: 46px; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body id="haut">
@@ -718,7 +809,48 @@ html.logos-ouverts { overflow: hidden; }
           <p class="constat__suite">Presque tous les dirigeants passent par là. Rien n’oblige à y rester.</p>
         </div>
         <figure class="visuel visuel--portrait constat__visuel revele" style="--retard:.1s">
-          <img src="assets/visuels/constat.webp" alt="Un dirigeant seul le soir à son bureau, la main sur le front, à côté d’une pile de factures." width="1024" height="1536" loading="lazy">
+          <img data-jeu="vivant" src="assets/visuels/constat.webp?v=2" alt="Un papillon orange et violet tout juste sorti de sa chrysalide, accroché à une branche couverte de rosée." width="683" height="1024" loading="lazy">
+          <img data-jeu="personnages" src="assets/visuels/personnages-constat.webp" alt="Un dirigeant seul le soir à son bureau, la main sur le front, à côté d’une pile de factures." width="1024" height="1536" loading="lazy">
+          <!-- Écran dessiné : les outils éparpillés d'avant (tableur, boîte de réception, relevé, note collée). -->
+          <svg class="ecran" data-jeu="solution" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Un tableur, une boîte de réception avec 47 messages non lus, un relevé bancaire à rapprocher et une note « Relancer », en désordre les uns sur les autres.">
+            <rect class="e-nuit" width="400" height="600"/>
+            <g transform="translate(22 48) rotate(-5 146 90)" data-fond="--papier">
+              <rect class="e-cadre" width="292" height="180" rx="10"/>
+              <text x="16" y="31" class="et-gras et-22">Tableur</text>
+              <rect class="e-bloc" x="1" y="44" width="290" height="34"/>
+              <rect class="e-champ" x="124" y="112" width="84" height="34"/>
+              <path class="e-filet" d="M0 44H292M0 78H292M0 112H124M208 112H292M0 146H124M208 146H292M40 44V180M124 44V112M124 146V180M208 44V112M208 146V180"/>
+              <path class="e-barre e-barre--forte" d="M54 57h44a4 4 0 0 1 0 8h-44a4 4 0 0 1 0-8ZM138 57h52a4 4 0 0 1 0 8h-52a4 4 0 0 1 0-8ZM222 57h36a4 4 0 0 1 0 8h-36a4 4 0 0 1 0-8ZM138 125h42a4 4 0 0 1 0 8h-42a4 4 0 0 1 0-8Z"/>
+              <path class="e-barre" d="M16 91h10a4 4 0 0 1 0 8h-10a4 4 0 0 1 0-8ZM54 91h56a4 4 0 0 1 0 8h-56a4 4 0 0 1 0-8ZM138 91h40a4 4 0 0 1 0 8h-40a4 4 0 0 1 0-8ZM222 91h48a4 4 0 0 1 0 8h-48a4 4 0 0 1 0-8ZM16 125h10a4 4 0 0 1 0 8h-10a4 4 0 0 1 0-8ZM54 125h38a4 4 0 0 1 0 8h-38a4 4 0 0 1 0-8ZM222 125h30a4 4 0 0 1 0 8h-30a4 4 0 0 1 0-8ZM16 159h10a4 4 0 0 1 0 8h-10a4 4 0 0 1 0-8ZM54 159h50a4 4 0 0 1 0 8h-50a4 4 0 0 1 0-8ZM138 159h34a4 4 0 0 1 0 8h-34a4 4 0 0 1 0-8ZM222 159h54a4 4 0 0 1 0 8h-54a4 4 0 0 1 0-8Z"/>
+            </g>
+            <!-- La note collée : un coin replié la distingue d'un bouton. -->
+            <g transform="translate(250 28) rotate(7 62 56)" data-fond="--accent">
+              <path class="e-note" d="M0 0H124V84L96 112H0Z"/>
+              <path class="e-pli" d="M96 112V92a8 8 0 0 1 8-8H124Z"/>
+              <text x="62" y="62" class="et-titre et-sur et-mil et-24">Relancer</text>
+            </g>
+            <g transform="translate(84 222) rotate(4 146 85)" data-fond="--papier">
+              <rect class="e-cadre" width="292" height="170" rx="10"/>
+              <text x="16" y="31" class="et-gras et-22">Boîte de réception</text>
+              <rect class="e-accent" x="1" y="44" width="290" height="38"/>
+              <text x="16" y="70.5" class="et-gras et-sur et-22" data-fond="--accent">47 non lus</text>
+              <path class="e-filet" d="M0 44H292M0 82H292M16 126H276"/>
+              <circle class="e-accent" cx="24" cy="104" r="6"/>
+              <circle class="e-accent" cx="24" cy="148" r="6"/>
+              <path class="e-barre e-barre--forte" d="M46 93h92a4 4 0 0 1 0 8h-92a4 4 0 0 1 0-8ZM46 137h68a4 4 0 0 1 0 8h-68a4 4 0 0 1 0-8Z"/>
+              <path class="e-barre" d="M46 108h188a4 4 0 0 1 0 8h-188a4 4 0 0 1 0-8ZM46 152h160a4 4 0 0 1 0 8h-160a4 4 0 0 1 0-8Z"/>
+            </g>
+            <g transform="translate(22 398) rotate(-3 146 88)" data-fond="--papier">
+              <rect class="e-cadre" width="292" height="176" rx="10"/>
+              <text x="16" y="31" class="et-gras et-22">Relevé bancaire</text>
+              <rect class="e-actif" x="8" y="92" width="276" height="40" rx="8"/>
+              <path class="e-filet" d="M0 44H292"/>
+              <path class="e-barre" d="M16 62h34a4 4 0 0 1 0 8h-34a4 4 0 0 1 0-8ZM64 62h108a4 4 0 0 1 0 8h-108a4 4 0 0 1 0-8ZM16 108h34a4 4 0 0 1 0 8h-34a4 4 0 0 1 0-8ZM16 150h34a4 4 0 0 1 0 8h-34a4 4 0 0 1 0-8ZM64 150h84a4 4 0 0 1 0 8h-84a4 4 0 0 1 0-8Z"/>
+              <path class="e-barre e-barre--forte" d="M232 62h40a4 4 0 0 1 0 8h-40a4 4 0 0 1 0-8ZM240 150h32a4 4 0 0 1 0 8h-32a4 4 0 0 1 0-8Z"/>
+              <rect class="e-contour" x="100" y="96" width="168" height="32" rx="16"/>
+              <text x="184" y="119.5" class="et-mil et-22" data-fond="--actif">À rapprocher</text>
+            </g>
+          </svg>
         </figure>
       </div>
     </div>
@@ -736,7 +868,38 @@ html.logos-ouverts { overflow: hidden; }
       <ul class="grille services" role="list">
         <li class="service revele" data-nom="Odoo">
           <figure class="visuel">
-            <img src="assets/visuels/odoo.webp" alt="Un dirigeant souriant devant son ordinateur portable, qui affiche un tableau de bord." width="1536" height="1024" loading="lazy">
+            <img data-jeu="vivant" src="assets/visuels/odoo.webp?v=2" alt="La coupe d’un coquillage en spirale, aux loges régulières, dans des reflets violets et orangés." width="1411" height="941" loading="lazy">
+            <img data-jeu="personnages" src="assets/visuels/personnages-odoo.webp" alt="Un dirigeant souriant devant son ordinateur portable, qui affiche un tableau de bord." width="1536" height="1024" loading="lazy">
+            <!-- Écran dessiné : un tableau de bord (menu à cinq entrées, trois compteurs, encaissements par mois). -->
+            <svg class="ecran" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : un tableau de bord de facturation, avec un menu à cinq entrées, trois compteurs et un graphique des encaissements par mois.">
+              <rect class="e-nuit" width="600" height="400"/>
+              <g data-fond="--papier">
+                <rect class="e-cadre" x="28" y="28" width="544" height="344" rx="14"/>
+                <path class="e-filet" d="M192 28V372"/>
+                <rect class="e-encre" x="50" y="50" width="41.4" height="22" rx="11"/>
+                <circle class="e-anneau" cx="61" cy="61" r="6" stroke-width="3"/>
+                <circle class="e-accent" cx="80.4" cy="61" r="7.5"/>
+                <text x="50" y="124">Ventes</text>
+                <text x="50" y="166">Achats</text>
+                <text x="50" y="208">Stocks</text>
+                <rect class="e-encre" x="40" y="226" width="138" height="34" rx="17"/>
+                <text x="50" y="249.5" class="et-clair" data-fond="--encre">Facturation</text>
+                <text x="50" y="292">Comptabilité</text>
+                <path class="e-trait" d="M210 58H314M328 58H432M446 58H550"/>
+                <text x="210" y="88">À émettre</text>
+                <text x="210" y="138" class="et-titre et-46">12</text>
+                <text x="328" y="88">En attente</text>
+                <text x="328" y="138" class="et-titre et-46">8</text>
+                <text x="446" y="88">En retard</text>
+                <text x="446" y="138" class="et-titre et-46">3</text>
+                <circle class="e-accent" cx="493" cy="122" r="8"/>
+                <text x="210" y="192" class="et-gras et-22">Encaissements par mois</text>
+                <path class="e-filet" d="M210 214H550M210 258H550M210 302H550"/>
+                <path class="e-vif" d="M210 346V266a4 4 0 0 1 4-4h32a4 4 0 0 1 4 4V346ZM270 346V232a4 4 0 0 1 4-4h32a4 4 0 0 1 4 4V346ZM330 346V284a4 4 0 0 1 4-4h32a4 4 0 0 1 4 4V346ZM390 346V218a4 4 0 0 1 4-4h32a4 4 0 0 1 4 4V346ZM450 346V254a4 4 0 0 1 4-4h32a4 4 0 0 1 4 4V346Z"/>
+                <path class="e-encre" d="M510 346V242a4 4 0 0 1 4-4h32a4 4 0 0 1 4 4V346Z"/>
+                <path class="e-trait" d="M210 347H550"/>
+              </g>
+            </svg>
           </figure>
           <div class="service__corps">
             <div class="service__tete">
@@ -773,7 +936,49 @@ html.logos-ouverts { overflow: hidden; }
 
         <li class="service revele" data-nom="IA" style="--retard:.08s">
           <figure class="visuel">
-            <img src="assets/visuels/ia.webp" alt="Une formatrice montre un écran à deux collègues assis côte à côte, tous les trois souriants." width="1536" height="1024" loading="lazy">
+            <img data-jeu="vivant" src="assets/visuels/ia.webp?v=2" alt="Les nervures d’une feuille vues de très près, en réseau violet et orangé." width="1411" height="941" loading="lazy">
+            <img data-jeu="personnages" src="assets/visuels/personnages-ia.webp" alt="Une formatrice montre un écran à deux collègues assis côte à côte, tous les trois souriants." width="1536" height="1024" loading="lazy">
+            <!-- Écran dessiné : une facture fournisseur dont trois champs sont lus, et le panneau de l'assistant. -->
+            <svg class="ecran" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : une facture fournisseur dont trois champs sont repérés, et un assistant qui propose de valider une relance qu’il a préparée.">
+              <rect class="e-vif" width="600" height="400"/>
+              <g data-fond="--papier">
+                <rect class="e-cadre" x="28" y="28" width="180" height="344" rx="8"/>
+                <circle class="e-bloc" cx="58" cy="62" r="14"/>
+                <path class="e-barre e-barre--forte" d="M86 51h76a4 4 0 0 1 0 8h-76a4 4 0 0 1 0-8Z"/>
+                <path class="e-barre" d="M86 66h48a4 4 0 0 1 0 8h-48a4 4 0 0 1 0-8ZM48 346h96a4 4 0 0 1 0 8h-96a4 4 0 0 1 0-8Z"/>
+                <path class="e-filet" d="M44 98H192"/>
+                <text x="44" y="131" class="et-22">Fournisseur</text>
+                <text x="44" y="211" class="et-22">Montant</text>
+                <text x="44" y="291" class="et-22">Échéance</text>
+                <rect class="e-champ" x="44" y="141" width="148" height="30" rx="6"/>
+                <rect class="e-champ" x="44" y="221" width="148" height="30" rx="6"/>
+                <rect class="e-champ" x="44" y="301" width="148" height="30" rx="6"/>
+                <path class="e-barre e-barre--forte" d="M58 152h88a4 4 0 0 1 0 8h-88a4 4 0 0 1 0-8ZM58 232h50a4 4 0 0 1 0 8h-50a4 4 0 0 1 0-8ZM58 312h68a4 4 0 0 1 0 8h-68a4 4 0 0 1 0-8Z"/>
+                <rect class="e-cadre" x="236" y="28" width="336" height="344" rx="14"/>
+                <rect class="e-encre" x="256" y="48" width="41.4" height="22" rx="11"/>
+                <circle class="e-anneau" cx="267" cy="59" r="6" stroke-width="3"/>
+                <circle class="e-accent" cx="286.4" cy="59" r="7.5"/>
+                <text x="308" y="67" class="et-titre et-24">Assistant</text>
+                <rect class="e-actif" x="252" y="86" width="284" height="105" rx="12"/>
+                <!-- Les trois champs lus se rejoignent et arrivent sur le message qui parle de la facture. -->
+                <path class="e-trait" d="M192 156H222M192 236H222M192 316H216a6 6 0 0 0 6-6V144a6 6 0 0 1 6-6H252"/>
+                <circle class="e-encre" cx="252" cy="138" r="5"/>
+                <g data-fond="--actif">
+                  <text x="270" y="117" class="et-moyen et-22">Facture fournisseur</text>
+                  <text x="270" y="144" class="et-moyen et-22">reconnue et rattachée</text>
+                  <text x="270" y="171" class="et-moyen et-22">à sa commande.</text>
+                </g>
+                <rect class="e-actif" x="252" y="201" width="264" height="78" rx="12"/>
+                <g data-fond="--actif">
+                  <text x="270" y="232" class="et-moyen et-22">Relance préparée pour</text>
+                  <text x="270" y="259" class="et-moyen et-22">3 clients en retard.</text>
+                </g>
+                <rect class="e-encre" x="252" y="293" width="146" height="44" rx="22"/>
+                <text x="325" y="322" class="et-gras et-clair et-mil et-22" data-fond="--encre">Valider</text>
+                <rect class="e-contour" x="408" y="293" width="128" height="44" rx="22"/>
+                <text x="472" y="322" class="et-gras et-mil et-22">Relire</text>
+              </g>
+            </svg>
           </figure>
           <div class="service__corps">
             <div class="service__tete">
@@ -810,7 +1015,41 @@ html.logos-ouverts { overflow: hidden; }
 
         <li class="service revele" data-nom="Back-office" style="--retard:.16s">
           <figure class="visuel">
-            <img src="assets/visuels/back-office.webp" alt="Une équipe de trois personnes au travail, casque sur les oreilles. Deux d’entre elles échangent en souriant." width="1536" height="1024" loading="lazy">
+            <img data-jeu="vivant" src="assets/visuels/back-office.webp?v=2" alt="Une abeille en vol, chargée de pollen, s’approche d’une fleur violette au cœur orangé." width="1536" height="1024" loading="lazy">
+            <img data-jeu="personnages" src="assets/visuels/personnages-back-office.webp" alt="Une équipe de trois personnes au travail, casque sur les oreilles. Deux d’entre elles échangent en souriant." width="1536" height="1024" loading="lazy">
+            <!-- Écran dessiné : le journal de ce qui a été fait pour le client, et ce qui attend sa validation.
+                 Une ligne faite porte l'interrupteur allumé, comme dans le journal du héros. -->
+            <svg class="ecran" data-jeu="solution" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Écran d’exemple : la liste de ce que l’équipe Justdoo, au Portugal, a fait pour vous aujourd’hui, et des paiements fournisseurs qui attendent votre validation.">
+              <rect class="e-accent" width="600" height="400"/>
+              <g data-fond="--papier">
+                <rect class="e-papier" x="28" y="28" width="544" height="344" rx="14"/>
+                <text x="52" y="80" class="et-titre et-28">Fait pour vous aujourd’hui</text>
+                <text x="52" y="128" class="et-22">Factures clients émises</text>
+                <text x="52" y="172" class="et-22">Relances clients envoyées</text>
+                <text x="52" y="216" class="et-22">Encaissements pointés</text>
+                <path class="e-filet" d="M52 142H548M52 186H548"/>
+                <path class="e-encre" d="M515 108h21.1a12 12 0 0 1 0 24h-21.1a12 12 0 0 1 0-24ZM515 152h21.1a12 12 0 0 1 0 24h-21.1a12 12 0 0 1 0-24ZM515 196h21.1a12 12 0 0 1 0 24h-21.1a12 12 0 0 1 0-24Z"/>
+                <circle class="e-anneau" cx="515" cy="120" r="6.5" stroke-width="3.3"/>
+                <circle class="e-accent" cx="536.1" cy="120" r="8.2"/>
+                <circle class="e-anneau" cx="515" cy="164" r="6.5" stroke-width="3.3"/>
+                <circle class="e-accent" cx="536.1" cy="164" r="8.2"/>
+                <circle class="e-anneau" cx="515" cy="208" r="6.5" stroke-width="3.3"/>
+                <circle class="e-accent" cx="536.1" cy="208" r="8.2"/>
+                <rect class="e-actif" x="40" y="234" width="520" height="52" rx="10"/>
+                <text x="52" y="267.5" class="et-22" data-fond="--actif">Paiements fournisseurs préparés</text>
+                <rect class="e-accent" x="414" y="244" width="134" height="32" rx="16"/>
+                <text x="481" y="266.5" class="et-gras et-sur et-mil" data-fond="--accent">À valider</text>
+                <path class="e-bloc" d="M28 304H572V358a14 14 0 0 1-14 14H42a14 14 0 0 1-14-14Z"/>
+                <circle class="e-nuit e-pastille" cx="68" cy="338" r="17"/>
+                <path class="e-papier" d="M68 327.5a5.2 5.2 0 1 1 0 10.4a5.2 5.2 0 1 1 0-10.4ZM59 350a9 9 0 0 1 18 0Z"/>
+                <circle class="e-vif e-pastille" cx="92" cy="338" r="17"/>
+                <path class="e-papier" d="M92 327.5a5.2 5.2 0 1 1 0 10.4a5.2 5.2 0 1 1 0-10.4ZM83 350a9 9 0 0 1 18 0Z"/>
+                <circle class="e-accent e-pastille" cx="116" cy="338" r="17"/>
+                <path class="e-sur" d="M116 327.5a5.2 5.2 0 1 1 0 10.4a5.2 5.2 0 1 1 0-10.4ZM107 350a9 9 0 0 1 18 0Z"/>
+                <text x="148" y="345.5" class="et-22" data-fond="--bloc">Votre équipe Justdoo, au Portugal</text>
+                <rect class="e-contour" x="28" y="28" width="544" height="344" rx="14"/>
+              </g>
+            </svg>
           </figure>
           <div class="service__corps">
             <div class="service__tete">
@@ -1052,7 +1291,6 @@ html.logos-ouverts { overflow: hidden; }
   </div>
 </footer>
 
-<!-- Outil de maquette : choix de la palette. À retirer avant la mise en ligne définitive. -->
 <!-- Outil de maquette : la page « Pistes de logo », ouverte par le bouton du pied de page (adresse #logos).
      À retirer avec assets/logos.js avant la mise en ligne définitive. -->
 <section class="logos avec-js" id="logos" aria-labelledby="logos-titre" hidden>
@@ -1060,7 +1298,7 @@ html.logos-ouverts { overflow: hidden; }
     <div class="logos__tete">
       <p class="surtitre">Outil de maquette</p>
       <h2 id="logos-titre" tabindex="-1">Pistes de logo</h2>
-      <p class="logos__aide">Cliquez sur un logo pour l’essayer sur tout le site. Il suit les couleurs choisies dans «&nbsp;Couleurs maquette&nbsp;». Cet outil ne sera pas sur le site final.</p>
+      <p class="logos__aide">Cliquez sur un logo pour l’essayer sur tout le site. Il suit les couleurs choisies dans «&nbsp;Logo, images, couleurs&nbsp;». Cet outil ne sera pas sur le site final.</p>
       <a class="lien" href="#haut" data-logos-quitter>Retour au site</a>
     </div>
     <div class="logos__jeu" role="group" aria-labelledby="logos-titre">
@@ -1087,15 +1325,46 @@ html.logos-ouverts { overflow: hidden; }
 </section>
 <script src="assets/logos.js"></script>
 
+<!-- Outil de maquette : le panneau « Logo, images, couleurs ». À retirer avant la mise en ligne définitive. -->
+
 <div class="couleurs avec-js" id="couleurs">
   <button type="button" class="couleurs__bouton" aria-expanded="false" aria-controls="couleurs-carte">
     <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-    <span>Couleurs maquette</span>
+    <span>Logo, images, couleurs</span>
   </button>
   <div class="couleurs__carte" id="couleurs-carte" hidden>
-    <p class="couleurs__titre">Couleurs maquette</p>
-    <p class="couleurs__aide">Un clic change toute la page. Cet outil ne sera pas sur le site final.</p>
-    <div role="group" aria-label="Palettes">
+    <div class="couleurs__tete">
+      <p class="couleurs__titre">Outil de maquette</p>
+      <p class="couleurs__aide">Un clic change toute la page. Cet outil ne sera pas sur le site final.</p>
+    </div>
+    <div class="couleurs__groupe couleurs__groupe--logo" id="outil-logo" role="group" aria-labelledby="outil-logo-nom">
+      <p class="couleurs__nom" id="outil-logo-nom">Logo</p>
+      <div class="lgo-jeu">
+        <button type="button" class="lgo-choix" data-choix-logo="actuel" aria-pressed="true"><span class="lgo" data-logo="actuel" aria-hidden="true"></span><span>L’interrupteur</span></button>
+        <button type="button" class="lgo-choix" data-choix-logo="cercles" aria-pressed="false"><span class="lgo" data-logo="cercles" aria-hidden="true"></span><span>Trois cercles</span></button>
+        <button type="button" class="lgo-choix" data-choix-logo="ruban" aria-pressed="false"><span class="lgo" data-logo="ruban" aria-hidden="true"></span><span>L’infini</span></button>
+      </div>
+    </div>
+    <div class="couleurs__groupe couleurs__groupe--images" role="group" aria-labelledby="outil-images-nom">
+      <p class="couleurs__nom" id="outil-images-nom">Images</p>
+      <button type="button" class="img-choix" data-choix-images="vivant" aria-pressed="true">
+        <span class="img-choix__picto" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 19c0-8.5 5-13.5 14-14 0 9-5 14-13 14M5 19c3-5 6-8 9.5-10"/></svg></span>
+        <span>Le vivant<small>Coquillage, feuille, abeille, papillon</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+      <button type="button" class="img-choix" data-choix-images="solution" aria-pressed="false">
+        <span class="img-choix__picto" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M8 15.5v-3M12 15.5v-7M16 15.5V11"/></svg></span>
+        <span>La solution<small>Des écrans dessinés, aux couleurs de la page</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+      <button type="button" class="img-choix" data-choix-images="personnages" aria-pressed="false">
+        <span class="img-choix__picto" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c.8-4 3.4-6 7-6s6.2 2 7 6"/></svg></span>
+        <span>Les personnages<small>Les images du 21 novembre</small></span>
+        <span class="coche" aria-hidden="true">✓</span>
+      </button>
+    </div>
+    <div class="couleurs__groupe couleurs__groupe--palettes" role="group" aria-labelledby="outil-couleurs-nom">
+      <p class="couleurs__nom" id="outil-couleurs-nom">Couleurs</p>
       <button type="button" class="pal-choix" data-palette="origine" aria-pressed="true">
         <span class="pastilles" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         <span>Améthyste et corail<small>Palette d’origine, violet et orange</small></span>
@@ -1152,9 +1421,12 @@ html.logos-ouverts { overflow: hidden; }
   }
   document.addEventListener('pointermove', armerBascule, { passive: true });
 
-  /* ---------- Couleurs maquette (outil de maquette, à retirer avant la mise en ligne définitive) ----------
-     Un clic change toute la page. Le choix est retenu par le navigateur et vaut pour les deux langues.
-     Les teintes sont dans le CSS : [data-palette="..."]. Une adresse en ?palette=foret ouvre une palette précise. */
+  /* ---------- Logo, images, couleurs (outil de maquette, à retirer avant la mise en ligne définitive) ----------
+     Un panneau, trois groupes. Un clic change toute la page ; chaque choix est retenu par le navigateur et vaut pour
+     les deux langues. Adresses : ?logo=cercles, ?images=solution, ?palette=foret (elles se combinent).
+     - Couleurs : les teintes sont dans le CSS, [data-palette="..."].
+     - Images : l'attribut data-images de <html> choisit le jeu montré dans chaque emplacement (CSS, section 3).
+     - Logo : dessiné et appliqué par assets/logos.js, qui prévient quand le logo change (événement justdoo:logo). */
   var outilCouleurs = document.getElementById('couleurs');
   if (outilCouleurs) {
     var racine = document.documentElement;
@@ -1178,18 +1450,63 @@ html.logos-ouverts { overflow: hidden; }
         );
       }).catch(function () {});
     };
-    var ouvrirCouleurs = function (oui) { carteCouleurs.hidden = !oui; boutonCouleurs.setAttribute('aria-expanded', String(oui)); };
-    boutonCouleurs.addEventListener('click', function () { ouvrirCouleurs(carteCouleurs.hidden); });
     choixPalettes.forEach(function (b) {
       b.addEventListener('click', function (evt) {
         var r = b.getBoundingClientRect();
         choisirPalette(b.getAttribute('data-palette'), evt.clientX || r.left + 20, evt.clientY || r.top + 20);
       });
     });
+    poserPalette(racine.getAttribute('data-palette') || 'origine');
+
+    /* Images : un nom inconnu (adresse erronée, ancien choix) ramène au jeu « vivant ». */
+    var choixImages = tous('.img-choix', outilCouleurs);
+    var poserImages = function (id) {
+      if (!choixImages.some(function (b) { return b.getAttribute('data-choix-images') === id; })) id = 'vivant';
+      racine.setAttribute('data-images', id);
+      choixImages.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-choix-images') === id)); });
+      try { window.localStorage.setItem('justdoo-images', id); } catch (e) { /* stockage indisponible : sans gravité */ }
+    };
+    choixImages.forEach(function (b) {
+      b.addEventListener('click', function () { poserImages(b.getAttribute('data-choix-images')); });
+    });
+    poserImages(racine.getAttribute('data-images') || 'vivant');
+
+    /* Logo : le panneau et la page « Pistes de logo » pilotent le même choix, tenu par assets/logos.js.
+       Si ce fichier n'a pas pu se charger, le groupe disparaît du panneau. */
+    var groupeLogo = document.getElementById('outil-logo');
+    var choixLogos = tous('.lgo-choix', outilCouleurs);
+    var logos = window.JustdooLogos;
+    if (logos && groupeLogo) {
+      var marquerLogo = function (nom) {
+        choixLogos.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-choix-logo') === nom)); });
+      };
+      choixLogos.forEach(function (b) {
+        var nom = b.getAttribute('data-choix-logo');
+        var dessin = b.querySelector('.lgo');
+        if (dessin) dessin.innerHTML = logos.balisage(nom);
+        b.addEventListener('click', function () { logos.choisir(nom); });
+      });
+      document.addEventListener('justdoo:logo', function (evt) { marquerLogo(evt.detail); });
+      marquerLogo(racine.getAttribute('data-logo') || 'actuel');
+    } else if (groupeLogo) {
+      groupeLogo.hidden = true;
+    }
+
+    var ouvrirCouleurs = function (oui) {
+      carteCouleurs.hidden = !oui;
+      boutonCouleurs.setAttribute('aria-expanded', String(oui));
+      if (oui && logos && logos.preparer) logos.preparer();   /* la police du logo « Trois cercles », pour sa vignette */
+    };
+    boutonCouleurs.addEventListener('click', function () { ouvrirCouleurs(carteCouleurs.hidden); });
     /* Un clic ailleurs referme la carte, sauf dans la page des logos : on y alterne logos et couleurs. */
     document.addEventListener('click', function (evt) { if (!outilCouleurs.contains(evt.target) && !evt.target.closest('#logos')) ouvrirCouleurs(false); });
-    document.addEventListener('keydown', function (evt) { if (evt.key === 'Escape') ouvrirCouleurs(false); });
-    poserPalette(racine.getAttribute('data-palette') || 'origine');
+    /* Échap referme la carte ; si le focus s'y trouvait, il revient au bouton plutôt que de rester sur un choix caché. */
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key !== 'Escape') return;
+      var dedans = carteCouleurs.contains(document.activeElement);
+      ouvrirCouleurs(false);
+      if (dedans) boutonCouleurs.focus({ preventScroll: true });
+    });
   }
 
   /* ---------- Apparition au défilement ---------- */
